@@ -22,6 +22,52 @@ extern void print(agent* thisAgent, const char* format, ...);
 
 /* -- Enables tracing functions that print SQL processing and errors -- */
 //#define DEBUG_EPMEM_SQL
+#define SOAR_RELEASE_VERSION
+
+#ifndef SOAR_RELEASE_VERSION
+    /* --  The following enables debugging traces/modes. Individual debug
+     *     #defines are found in debug_defines.h -- */
+    #define DEBUG_SAVE_IDENTITY_TO_RULE_SYM_MAPPINGS
+
+    /* -- Enables tracing functions that print SQL processing and errors -- */
+    //#define DEBUG_EPMEM_SQL
+
+    /* -- Enables the printing of the call trace within debug messages.  Tested
+     *    on OSX (Mountain Lion).  Compiles and might also work on Linux,
+     *    but not tested. Does not work on Windows. -- */
+    //#define DEBUG_MAC_STACKTRACE
+
+    /* -- Enables extensive refcount and deallocation data tracking into
+     *    the debug database -- */
+    //#define DEBUG_TRACE_REFCOUNT_INVENTORY
+
+    //#define DEBUG_EPMEM_WME_ADD
+    //#define DEBUG_MEMORY  /* -- Zeroes out memory on init and fills with garbage on dealloc -- */
+    //#define DEBUG_PREFS         /* -- Preference printouts -- */
+    //#define DEBUG_RETE_PNODES
+    //#define DEBUG_WATERFALL
+    //#define DEBUG_LINKS       /* -- Get links, gc printouts -- */
+    //#define DEBUG_CT_OSUPPORT /* Print names of productions that can't be fully compile-time o-support evaluated */
+
+    /* -- Low level GDS debug information -- */
+    //#define DEBUG_GDS
+
+    /* -- High-level information on the instantiations that created an
+     * o-supported element and lead to the elaboration of the GDS */
+    //#define DEBUG_GDS_HIGH
+
+    #define MEMORY_POOL_STATS   /* -- Collects memory pool stats for stats command -- */
+//    #define MEM_POOLS_ENABLED 1
+    #ifdef MEM_POOLS_ENABLED
+//        #define USE_MEM_POOL_ALLOCATORS 1
+    #endif
+#else
+    //#define MEMORY_POOL_STATS   /* -- Collects memory pool stats for stats command -- */
+    #define MEM_POOLS_ENABLED 0
+    #ifdef MEM_POOLS_ENABLED
+        #define USE_MEM_POOL_ALLOCATORS 1
+    #endif
+#endif
 
 /* -- Enables the printing of the call trace within debug messages.  Tested
  *    on OSX (Mountain Lion).  Compiles and might also work on Linux,
