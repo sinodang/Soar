@@ -185,6 +185,7 @@ void Output_Manager::fill_mode_info()
     mode_info[DT_EPMEM_CMD].prefix =                    strdup("EpMemCmd| ");
     mode_info[DT_PARSER].prefix =                       strdup("Parser  | ");
     mode_info[DT_GDS].prefix =                          strdup("GDS     | ");
+    mode_info[DT_EBC_RL].prefix =                       strdup("EBC-RL  | ");
     mode_info[DT_WME_CHANGES].prefix =                  strdup("WMEChngs| ");
     mode_info[DT_LINKS].prefix =                        strdup("Links   | ");
     mode_info[DT_UNKNOWN_LEVEL].prefix =                strdup("No Level| ");
@@ -224,6 +225,7 @@ void Output_Manager::fill_mode_info()
     mode_info[DT_ID_LEAKING].enabled =                  TRACE_Init_DT_ID_LEAKING;
     mode_info[DT_DEALLOCATES].enabled =                 TRACE_Init_DT_DEALLOCATES;
     mode_info[DT_DEALLOCATE_SYMBOLS].enabled =          TRACE_Init_DT_DEALLOCATE_SYMBOLS;
+    mode_info[DT_DEALLOCATES_TESTS].enabled =           TRACE_Init_DT_DEALLOCATES_TESTS;
     mode_info[DT_REFCOUNT_ADDS].enabled =               TRACE_Init_DT_REFCOUNT_ADDS;
     mode_info[DT_REFCOUNT_REMS].enabled =               TRACE_Init_DT_REFCOUNT_REMS;
 
@@ -231,7 +233,11 @@ void Output_Manager::fill_mode_info()
     mode_info[DT_CLI_LIBRARIES].enabled =               TRACE_Init_DT_CLI_LIBRARIES;
     mode_info[DT_PARSER].enabled =                      TRACE_Init_DT_PARSER;
     mode_info[DT_GDS].enabled =                         TRACE_Init_DT_GDS;
+    mode_info[DT_EBC_RL].enabled =                      TRACE_Init_DT_EBC_RL;
     mode_info[DT_EPMEM_CMD].enabled =                   TRACE_Init_DT_EPMEM_CMD;
+    mode_info[DT_WME_CHANGES].enabled =                 TRACE_Init_DT_WME_CHANGES;
+    mode_info[DT_LINKS].enabled =                       TRACE_Init_DT_LINKS;
+    mode_info[DT_UNKNOWN_LEVEL].enabled =               TRACE_Init_DT_UNKNOWN_LEVEL;
 
     mode_info[DT_PRINT_INSTANTIATIONS].enabled =        TRACE_Init_DT_PRINT_INSTANTIATIONS;
     mode_info[DT_MILESTONES].enabled =                  TRACE_Init_DT_MILESTONES;
@@ -254,10 +260,6 @@ void Output_Manager::fill_mode_info()
     mode_info[DT_EBC_CLEANUP].enabled =                 TRACE_Init_DT_EBC_CLEANUP;
     mode_info[DT_RHS_VALUE].enabled =                   TRACE_Init_DT_RHS_VALUE;
 
-    mode_info[DT_WME_CHANGES].enabled =                 TRACE_Init_DT_WME_CHANGES;
-    mode_info[DT_DEALLOCATES_TESTS].enabled =           TRACE_Init_DT_DEALLOCATES_TESTS;
-    mode_info[DT_LINKS].enabled =                       TRACE_Init_DT_LINKS;
-    mode_info[DT_UNKNOWN_LEVEL].enabled =               TRACE_Init_DT_UNKNOWN_LEVEL;
 }
 
 

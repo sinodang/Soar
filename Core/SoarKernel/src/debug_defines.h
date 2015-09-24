@@ -8,10 +8,11 @@
 
 #ifndef DEBUG_DEFINES_H_
 #define DEBUG_DEFINES_H_
+#include "kernel.h"
 
 /* ---------------------------------------------------------------------*/
 
-//#define DEBUG_OUTPUT_ON
+#define DEBUG_OUTPUT_ON
 
 /* These are just for experimental purposes.  Should not be commented out */
 #define EBC_MERGE_CONDITIONS
@@ -22,6 +23,15 @@
 //#define EBC_MAP_MERGE_DUPE_GROUNDS
 #ifdef EBC_MAP_MERGE_DUPE_GROUNDS
 //#define EBC_SUPERMERGE
+#endif
+
+/* Make sure settings are right for release version */
+#ifdef SOAR_RELEASE_VERSION
+    #undef DEBUG_OUTPUT_ON
+    #undef EBC_MAP_MERGE_DUPE_GROUNDS
+    #undef EBC_SUPERMERGE
+    #define EBC_MERGE_CONDITIONS
+    #define EBC_ADD_CONSTRAINTS_IDENTITIES
 #endif
 
 #ifdef DEBUG_OUTPUT_ON
@@ -51,9 +61,10 @@
 #define TRACE_Init_DT_EPMEM_CMD                   false
 #define TRACE_Init_DT_PARSER                      false
 #define TRACE_Init_DT_GDS                         false
+#define TRACE_Init_DT_EBC_RL                      true
 #define TRACE_Init_DT_WME_CHANGES                 false
 #define TRACE_Init_DT_LINKS                       false
-#define TRACE_Init_DT_UNKNOWN_LEVEL               true
+#define TRACE_Init_DT_UNKNOWN_LEVEL               false
 //--
 #define TRACE_Init_DT_MILESTONES                  false
 #define TRACE_Init_DT_PRINT_INSTANTIATIONS        false
@@ -116,6 +127,7 @@
 #define TRACE_Init_DT_EPMEM_CMD                   false
 #define TRACE_Init_DT_PARSER                      false
 #define TRACE_Init_DT_GDS                         false
+#define TRACE_Init_DT_EBC_RL                      false
 #define TRACE_Init_DT_WME_CHANGES                 false
 #define TRACE_Init_DT_LINKS                       false
 #define TRACE_Init_DT_UNKNOWN_LEVEL               false
@@ -153,14 +165,5 @@
 #define OM_Init_callback_dbg_mode off
 #define OM_Init_stdout_dbg_mode   off
 #endif
-
-#ifdef SOAR_RELEASE_VERSION
-    #undef DEBUG_OUTPUT_ON
-    #undef EBC_MAP_MERGE_DUPE_GROUNDS
-    #undef EBC_SUPERMERGE
-    #define EBC_MERGE_CONDITIONS
-    #define EBC_ADD_CONSTRAINTS_IDENTITIES
-#endif
-
 
 #endif /* DEBUG_DEFINES_H_ */
