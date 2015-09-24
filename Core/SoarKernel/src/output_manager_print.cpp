@@ -479,6 +479,13 @@ void Output_Manager::vsnprint_sf(agent* thisAgent, std::string &destString, cons
                     }
                     break;
 
+                    case 'o':
+                    {
+                        int argument = va_arg(args, double);
+                        destString += std::to_string(argument);
+                    }
+                    break;
+
                     case 'f':
                     {
                         if (thisAgent->output_settings->printer_output_column != 1)

@@ -39,12 +39,12 @@ typedef struct identity_struct identity_info;
 
 /* These determine whether we print identity information when printing tests in debug statements */
 
-#ifndef SOAR_RELEASE_VERSION
-    #define OM_Default_print_actual true;
-    #define OM_Default_print_identity true;
-#else
+#ifdef SOAR_RELEASE_VERSION
     #define OM_Default_print_actual true;
     #define OM_Default_print_identity false;
+#else
+    #define OM_Default_print_actual true;
+    #define OM_Default_print_identity true;
 #endif
 
 typedef struct trace_mode_info_struct
@@ -311,6 +311,7 @@ class Output_Manager
  *       %i   int64_t
  *       %u   uint64_t
  *       %d   short
+ *       %o   double
  *       %s   string
  *       %f   fresh line (adds newline if not at column 1)
  *
@@ -321,7 +322,6 @@ class Output_Manager
  *       %p   preference
  *       %r   rhs value
  *       %y   symbol
- *       %o   symbol's original variable(s)
  *       %t   test
  *       %g   identity information for test
  *       %w   wme
