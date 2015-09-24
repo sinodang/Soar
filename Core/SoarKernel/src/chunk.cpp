@@ -1012,6 +1012,7 @@ void chunk_instantiation(agent* thisAgent, instantiation* inst, instantiation** 
 
 #ifdef CHUNKING_WITH_CONFIDENCE
     thisAgent->chunk_prob = 1;
+    dprint(DT_EBC_RL, "Setting chunk probability to 1.\n");
 #endif
 
     thisAgent->backtrace_number++;
@@ -1111,8 +1112,15 @@ void chunk_instantiation(agent* thisAgent, instantiation* inst, instantiation** 
 
 #ifdef CHUNKING_WITH_CONFIDENCE
     /* Now that backtracing is done, we know whether we're confident enough */
-    if (thisAgent->chunk_prob < thisAgent->sysparams[CHUNK_CONFIDENCE] / 100.0) {
-        variablize = FALSE;
+    if (variablize)
+    {
+        if (thisAgent->chunk_prob < thisAgent->sysparams[CHUNK_CONFIDENCE] / 100.0)
+        {
+            variablize = FALSE;
+            dprint(DT_EBC_RL, "Not variablizing chunk because probability %o < %o ", thisAgent->chunk_prob, thisAgent->sysparams[CHUNK_CONFIDENCE] / 100.0);
+        } else {
+            dprint(DT_EBC_RL, "Building chunk confidently because %o > %o ", thisAgent->chunk_prob, thisAgent->sysparams[CHUNK_CONFIDENCE] / 100.0);
+        }
     }
 #endif
 

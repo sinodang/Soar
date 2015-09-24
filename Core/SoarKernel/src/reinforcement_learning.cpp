@@ -1171,7 +1171,7 @@ void rl_perform_update(agent* thisAgent, double op_value, bool op_rl, Symbol* go
                                 }
                             }
                         }
-                        dprint(DT_EBC_RL, "%fConfidence data updated for rule %y Q: %o Qmin: %o Qmax: %o N: %d\n", prod->name, new_combined, conf_data.q_min, conf_data.q_max, conf_data.win_by_val.size());
+                        dprint(DT_EBC_RL, "Confidence data updated for rule %y Q: %o Qmin: %o Qmax: %o N: %d\n", prod->name, new_combined, conf_data.q_min, conf_data.q_max, conf_data.win_by_val.size());
                     }
                     #endif
                 }

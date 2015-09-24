@@ -515,7 +515,10 @@ void backtrace_through_instantiation(agent* thisAgent,
     free_list(thisAgent, negateds_to_print);
 
 #ifdef CHUNKING_WITH_CONFIDENCE
+    dprint(DT_EBC_RL, "Changing chunk probability by multiplying %o with %o to get ", thisAgent->chunk_prob, inst->prob);
+
     thisAgent->chunk_prob *= inst->prob;
+    dprint_noprefix(DT_EBC_RL, "%o\n", thisAgent->chunk_prob);
 #endif
 
 }
