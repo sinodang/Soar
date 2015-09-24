@@ -28,8 +28,8 @@
 #include <stdlib.h>
 
 #include "symtab.h"
-#include "mem.h"
 #include "kernel.h"
+#include "mem.h"
 #include "agent.h"
 #include "production.h"
 #include "init_soar.h"

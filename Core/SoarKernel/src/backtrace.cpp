@@ -513,6 +513,11 @@ void backtrace_through_instantiation(agent* thisAgent,
     free_list(thisAgent, pots_to_print);
     free_list(thisAgent, locals_to_print);
     free_list(thisAgent, negateds_to_print);
+
+#ifdef CHUNKING_WITH_CONFIDENCE
+    thisAgent->chunk_prob *= inst->prob;
+#endif
+
 }
 
 /* ---------------------------------------------------------------

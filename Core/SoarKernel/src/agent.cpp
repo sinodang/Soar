@@ -327,7 +327,18 @@ agent* create_soar_agent(char* agent_name)                                      
 
     rl_initialize_template_tracking(thisAgent);
 
+#ifdef CHUNKING_WITH_CONFIDENCE
+    // q-value bounding stuff
+#ifdef USE_MEM_POOL_ALLOCATORS
+//    thisAgent->rl_qconf = new rl_qconf_map(soar_module::soar_memory_pool_allocator<std::pair<production* const, rl_qconf_data > >());
+    thisAgent->rl_qconf = new rl_qconf_map();
+#else
+    thisAgent->rl_qconf = new rl_qconf_map();
+#endif
+#endif
+
     // select initialization
+
     thisAgent->select = new select_info;
     select_init(thisAgent);
 

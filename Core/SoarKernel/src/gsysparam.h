@@ -135,8 +135,19 @@ typedef struct agent_struct agent;
 
 #define TRACE_PARSER 46
 
+#ifdef CHUNKING_WITH_CONFIDENCE
+#define CHUNK_CONFIDENCE                         47
+#define RL_PARAM_BOUND_CONFIDENCE                48
+#define RL_PARAM_IE_WINSIZE                      49
+#define RL_PARAM_IE_LOWER_INDEX                  50
+#define RL_PARAM_IE_UPPER_INDEX                  51
+
+/* --- Warning: if you add sysparams, be sure to update the next line! --- */
+#define HIGHEST_SYSPARAM_NUMBER                  51
+#else
 /* --- Warning: if you add sysparams, be sure to update the next line! --- */
 #define HIGHEST_SYSPARAM_NUMBER                  46
+#endif
 
 /* -----------------------------------------
    Sysparams[] stores the parameters; set_sysparam()

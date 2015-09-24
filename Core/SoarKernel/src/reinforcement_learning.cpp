@@ -146,6 +146,23 @@ rl_param_container::rl_param_container(agent* new_agent): soar_module::param_con
     // trace
     trace = new soar_module::boolean_param("trace", off, new soar_module::f_predicate<boolean>());
     add(trace);
+
+#ifdef CHUNKING_WITH_CONFIDENCE
+
+    bound_confidence = new soar_module::decimal_param("bound-conf", 0.01, new soar_module::btw_predicate<double>(0, 1, true), new soar_module::f_predicate<double>());
+    add(bound_confidence);
+
+    IE_winsize = new soar_module::decimal_param("ie-win-size", 20.0, new soar_module::gt_predicate<double>(0, true), new soar_module::f_predicate<double>());
+    add(IE_winsize);
+
+    IE_lower_index = new soar_module::decimal_param("ie-lower-index-size", 5.0, new soar_module::gt_predicate<double>(0, true), new soar_module::f_predicate<double>());
+    add(IE_lower_index);
+
+    IE_upper_index = new soar_module::decimal_param("ie-upper-index", 16.0, new soar_module::gt_predicate<double>(0, true), new soar_module::f_predicate<double>());
+    add(IE_upper_index);
+
+#endif
+
 };
 
 //
@@ -826,7 +843,7 @@ void rl_store_data(agent* thisAgent, Symbol* goal, preference* cand)
                 (data->gap_age == 0) && !data->prev_op_rl_rules->empty())
         {
             char buf[256];
-            SNPRINTF(buf, 254, "gap started (%c%llu)", goal->id->name_letter, static_cast<long long unsigned>(goal->id->name_number));
+            SNPRINTF(buf, 254, "RL gap started (%c%llu)", goal->id->name_letter, static_cast<long long unsigned>(goal->id->name_number));
 
             print(thisAgent,  buf);
             xml_generate_warning(thisAgent, buf);
@@ -884,7 +901,7 @@ void rl_perform_update(agent* thisAgent, double op_value, bool op_rl, Symbol* go
             if (data->gap_age && using_gaps && thisAgent->sysparams[ TRACE_RL_SYSPARAM ])
             {
                 char buf[256];
-                SNPRINTF(buf, 254, "gap ended (%c%llu)", goal->id->name_letter, static_cast<long long unsigned>(goal->id->name_number));
+                SNPRINTF(buf, 254, "RL gap ended (%c%llu)", goal->id->name_letter, static_cast<long long unsigned>(goal->id->name_number));
 
                 print(thisAgent,  buf);
                 xml_generate_warning(thisAgent, buf);
@@ -1114,6 +1131,49 @@ void rl_perform_update(agent* thisAgent, double op_value, bool op_rl, Symbol* go
                             }
                         }
                     }
+
+                    #ifdef CHUNKING_WITH_CONFIDENCE
+
+                    if (iter->second == 1.0) {
+                        if (thisAgent->rl_qconf->find(prod) == thisAgent->rl_qconf->end()) {
+                            initialize_qconf(thisAgent, prod);
+                        }
+                        int window_size = thisAgent->rl_params->IE_winsize->get_value();
+                        int r = thisAgent->rl_params->IE_lower_index->get_value();
+                        int s = thisAgent->rl_params->IE_upper_index->get_value();
+
+                        rl_qconf_data &conf_data = (*thisAgent->rl_qconf)[prod];
+                        conf_data.win_by_val.insert(new_combined);
+                        conf_data.win_by_time.push_back(new_combined);
+                        if (conf_data.win_by_time.size() > window_size) {
+                            // keep a constant window size
+                            double stale = conf_data.win_by_time.front();
+                            // because multiset will erase all elements of the same value using
+                            // erase(val), I have to use find to get the position of one element
+                            // and erase that position
+                            std::multiset<double>::iterator stale_pos = conf_data.win_by_val.find(stale);
+                            conf_data.win_by_val.erase(stale_pos);
+                            conf_data.win_by_time.pop_front();
+
+                            // set the min and max to be the values with predetermined indexes
+                            // we only do this when the window has filled up
+                            std::multiset<double>::iterator i;
+                            int c;
+                            for(i = conf_data.win_by_val.begin(), c = 0;
+                                i != conf_data.win_by_val.end(); ++i, ++c)
+                            {
+                                if (c == r) {
+                                    conf_data.q_min = *i;
+                                }
+                                else if (c == s) {
+                                    conf_data.q_max = *i;
+                                    break;
+                                }
+                            }
+                        }
+                        dprint(DT_EBC_RL, "%fConfidence data updated for rule %y Q: %o Qmin: %o Qmax: %o N: %d\n", prod->name, new_combined, conf_data.q_min, conf_data.q_max, conf_data.win_by_val.size());
+                    }
+                    #endif
                 }
             }
         }
@@ -1129,3 +1189,11 @@ void rl_watkins_clear(agent* /*thisAgent*/, Symbol* goal)
 {
     goal->id->rl_info->eligibility_traces->clear();
 }
+
+#ifdef CHUNKING_WITH_CONFIDENCE
+void initialize_qconf(agent* thisAgent, production* p) {
+  // as a sentinel for not being able to determine bounds yet, set q_min > q_max
+  (*thisAgent->rl_qconf)[p].q_min = 1;
+  (*thisAgent->rl_qconf)[p].q_max = 0;
+}
+#endif

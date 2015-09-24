@@ -87,16 +87,16 @@ class rl_param_container: public soar_module::param_container
                                 q              = 0x01,
                                 on_policy_gql  = 0x10,
                                 off_policy_gql = 0x11};
-        
+
         // How the learning rate cools over time.
         // normal_decay: default, same learning rate for each rule
         // exponential_decay: rate = rate / # updates for this rule
         // logarithmic_decay: rate = rate / log(# updates for this rule)
         // Miller, 11/14/2011
         enum decay_choices { normal_decay, exponential_decay, logarithmic_decay, delta_bar_delta_decay };
-        
+
         enum apoptosis_choices { apoptosis_none, apoptosis_chunks, apoptosis_rl };
-        
+
         rl_learning_param* learning;
         soar_module::decimal_param* discount_rate;
         soar_module::decimal_param* learning_rate;
@@ -109,19 +109,23 @@ class rl_param_container: public soar_module::param_container
         soar_module::boolean_param* temporal_extension;
         soar_module::boolean_param* hrl_discount;
         soar_module::boolean_param* temporal_discount;
+        soar_module::decimal_param* bound_confidence;
+        soar_module::decimal_param* IE_winsize;
+        soar_module::decimal_param* IE_lower_index;
+        soar_module::decimal_param* IE_upper_index;
 
         soar_module::boolean_param* chunk_stop;
         soar_module::boolean_param* meta; // Whether doc strings are used for storing metadata.
         soar_module::string_param* update_log_path; // If non-null and size > 0, log all RL updates to this file.
-        
+
         rl_apoptosis_param* apoptosis;
         soar_module::decimal_param* apoptosis_decay;
         rl_apoptosis_thresh_param* apoptosis_thresh;
-        
+
         soar_module::boolean_param* trace;
-        
+
         rl_param_container(agent* new_agent);
-        
+
         // For writing parameters to a rule's documentation string.
         static const std::vector<std::pair<std::string, param_accessor<double> * > >& get_documentation_params();
 };
@@ -130,7 +134,7 @@ class rl_learning_param: public soar_module::boolean_param
 {
     protected:
         agent* thisAgent;
-        
+
     public:
         rl_learning_param(const char* new_name, boolean new_value, soar_module::predicate<boolean>* new_prot_pred, agent* new_agent);
         void set_value(boolean new_value);
@@ -140,7 +144,7 @@ class rl_apoptosis_param: public soar_module::constant_param< rl_param_container
 {
     protected:
         agent* thisAgent;
-        
+
     public:
         rl_apoptosis_param(const char* new_name, rl_param_container::apoptosis_choices new_value, soar_module::predicate<rl_param_container::apoptosis_choices>* new_prot_pred, agent* new_agent);
         void set_value(rl_param_container::apoptosis_choices new_value);
@@ -171,7 +175,7 @@ class rl_stat_container: public soar_module::stat_container
         soar_module::decimal_stat* update_error;
         soar_module::decimal_stat* total_reward;
         soar_module::decimal_stat* global_reward;
-        
+
         rl_stat_container(agent* new_agent);
 };
 
@@ -199,11 +203,11 @@ typedef struct rl_data_struct
 {
     rl_et_map* eligibility_traces;          // traces associated with productions
     rl_rule_list* prev_op_rl_rules;         // rl rules associated with the previous operator
-    
+
     double previous_q;                      // q-value of the previous state
     double reward;                          // accumulated discounted reward
     double rho;                             // ratio of target policy to behavior policy
-    
+
     unsigned int gap_age;                   // the number of steps since a cycle containing rl rules
     unsigned int hrl_age;                   // the number of steps in a subgoal
 } rl_data;
@@ -293,5 +297,20 @@ extern void rl_perform_update(agent* thisAgent, double op_value, bool op_rl, Sym
 
 // clears eligibility traces in accordance with watkins
 extern void rl_watkins_clear(agent* thisAgent, Symbol* goal);
+
+#ifdef CHUNKING_WITH_CONFIDENCE
+
+    typedef struct rl_qconf_data_struct {
+      double q_min;
+      double q_max;
+      // previous n sample window sorted by value
+      std::multiset<double> win_by_val;
+      // previous n sample window sorted by time
+      std::list<double> win_by_time;
+    } rl_qconf_data;
+
+    extern void initialize_qconf(agent* my_agent, production* p);
+
+#endif
 
 #endif

@@ -165,5 +165,10 @@ extern preference* exploration_get_highest_q_value_pref(preference* candidates);
 // computes total contribution for a candidate from each preference, as well as number of contributions
 extern void exploration_compute_value_of_candidate(agent* thisAgent, preference* cand, slot* s, double default_value = 0);
 
+#ifdef CHUNKING_WITH_CONFIDENCE
+extern bool intervals_separated(agent* my_agent, slot* s);
+extern double superior_q_prob(agent* my_agent, slot* s, preference* candidates, preference* selected);
+#endif
+
 #endif
 

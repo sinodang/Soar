@@ -866,6 +866,9 @@ void create_instantiation(agent* thisAgent, production* prod,
     inst->in_ms = true;
     inst->i_id = thisAgent->variablizationManager->get_new_inst_id();
     inst->GDS_evaluated_already = false;
+    #ifdef CHUNKING_WITH_CONFIDENCE
+        inst->prob = 1.0;
+    #endif
 
     dprint_header(DT_MILESTONES, PrintBefore,
         "create_instantiation() for instance of %y (id=%u) begun.\n",

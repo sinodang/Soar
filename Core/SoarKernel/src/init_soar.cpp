@@ -232,7 +232,9 @@ void init_sysparams(agent* thisAgent)
 
     // MMA: Chunk through evaluation rules off by default
     thisAgent->sysparams[CHUNK_THROUGH_EVALUATION_RULES_SYSPARAM] = false;
-
+#ifdef CHUNKING_WITH_CONFIDENCE
+    thisAgent->sysparams[CHUNK_CONFIDENCE] = 10;
+#endif
     thisAgent->sysparams[DECISION_CYCLE_MAX_USEC_INTERRUPT] = 0;
 }
 

@@ -1010,6 +1010,10 @@ void chunk_instantiation(agent* thisAgent, instantiation* inst, instantiation** 
 
     grounds_level = inst->match_goal_level - 1;
 
+#ifdef CHUNKING_WITH_CONFIDENCE
+    thisAgent->chunk_prob = 1;
+#endif
+
     thisAgent->backtrace_number++;
     if (thisAgent->backtrace_number == 0)
     {
@@ -1104,6 +1108,13 @@ void chunk_instantiation(agent* thisAgent, instantiation* inst, instantiation** 
     }
 
     variablize = thisAgent->variablizationManager->learning_is_on_for_instantiation() && reliable;
+
+#ifdef CHUNKING_WITH_CONFIDENCE
+    /* Now that backtracing is done, we know whether we're confident enough */
+    if (thisAgent->chunk_prob < thisAgent->sysparams[CHUNK_CONFIDENCE] / 100.0) {
+        variablize = FALSE;
+    }
+#endif
 
     /* --- get symbol for name of new chunk or justification --- */
     if (variablize)

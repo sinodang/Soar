@@ -8,6 +8,8 @@
 #ifndef INSTANTIATIONS_H
 #define INSTANTIATIONS_H
 
+#include "kernel.h"
+
 typedef struct condition_struct condition;
 typedef struct symbol_struct Symbol;
 typedef struct wme_struct wme;
@@ -95,7 +97,10 @@ typedef struct instantiation_struct
     bool in_ms;  /* true iff this inst. is still in the match set */
     tc_number backtrace_number;
     bool GDS_evaluated_already;
-    uint64_t i_id; /* Used by the chunker to generate instantiation-specific original variable ids */
+    uint64_t i_id; /* unique id to reference this instantiation */
+    #ifdef CHUNKING_WITH_CONFIDENCE
+        double prob;
+    #endif
 } instantiation;
 
 /* A dll of instantiations that will be used to determine the gds through

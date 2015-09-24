@@ -32,7 +32,6 @@ extern wme* glbDeepCopyWMEs;
 typedef signed short goal_stack_level;
 typedef struct agent_struct agent;
 typedef struct preference_struct preference;
-typedef struct instantiation_struct instantiation;
 typedef struct wme_struct wme;
 
 
