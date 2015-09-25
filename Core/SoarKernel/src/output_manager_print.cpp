@@ -481,7 +481,7 @@ void Output_Manager::vsnprint_sf(agent* thisAgent, std::string &destString, cons
 
                     case 'o':
                     {
-                        int argument = va_arg(args, double);
+                        double argument = va_arg(args, double);
                         destString += std::to_string(argument);
                     }
                     break;
