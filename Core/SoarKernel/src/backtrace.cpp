@@ -564,8 +564,14 @@ void trace_locals(agent* thisAgent, goal_stack_level grounds_level, bool* reliab
         /* --- if it has a trace at this level, backtrace through it --- */
         if (bt_pref)
         {
+#ifndef CHUNKING_WITH_CONFIDENCE
             backtrace_through_instantiation(thisAgent, bt_pref->inst, grounds_level, cond, reliable, 0, bt_pref->o_ids, bt_pref->rhs_funcs);
-
+#else
+            for (p = bt_pref; p; p = p->next_numeric)
+            {
+                backtrace_through_instantiation (thisAgent, p->inst, grounds_level, cond, reliable, 0, p->o_ids, p->rhs_funcs);
+            }
+#endif
             /* Check for any CDPS prefs and backtrace through them */
             if (cond->bt.CDPS)
             {

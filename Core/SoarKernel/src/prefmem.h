@@ -154,6 +154,7 @@ typedef struct preference_struct
 
     /* dll (without header) of cloned preferences (created when chunking) */
     struct preference_struct* next_clone, *prev_clone;
+    struct preference_struct *next_numeric, *prev_numeric;
 
     struct instantiation_struct* inst;
     struct preference_struct* inst_next, *inst_prev;

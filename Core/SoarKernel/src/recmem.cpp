@@ -1203,8 +1203,8 @@ void deallocate_instantiation(agent* thisAgent, instantiation* inst)
 
         level = inst->match_goal_level;
         thisAgent->variablizationManager->cleanup_for_instantiation_deallocation(inst->i_id);
-        for (cond = inst->top_of_instantiated_conditions; cond != NIL; cond =
-                    cond->next)
+        for (cond = inst->top_of_instantiated_conditions; cond != NIL;
+             cond = cond->next)
         {
             if (cond->type == POSITIVE_CONDITION)
             {
@@ -1245,6 +1245,7 @@ void deallocate_instantiation(agent* thisAgent, instantiation* inst)
 #endif
                 {
                     wme_remove_ref(thisAgent, cond->bt.wme_);
+
                     if (cond->bt.trace)
                     {
                         cond->bt.trace->reference_count--;
@@ -1302,27 +1303,33 @@ void deallocate_instantiation(agent* thisAgent, instantiation* inst)
                                 }
                             }
 
-                            /* --- deallocate pref --- */
-                            /* --- remove it from the list of bt.trace's for its match goal --- */
-                            if (cond->bt.trace->on_goal_list)
-                            {
+                            preference* lNextPref = NULL, *lPref = cond->bt.trace;
+                            while (lPref) {
+#ifdef CHUNKING_WITH_CONFIDENCE
+                                lNextPref = lPref->next_numeric;
+#endif
+                                /* --- deallocate pref --- */
+                                /* --- remove it from the list of bt.trace's for its match goal --- */
+                                if (lPref->on_goal_list)
+                                {
+                                    remove_from_dll(
+                                        lPref->inst->match_goal->id->preferences_from_goal,
+                                        lPref, all_of_goal_next,
+                                        all_of_goal_prev);
+                                }
+
+                                /* --- remove it from the list of bt.trace's from that instantiation --- */
                                 remove_from_dll(
-                                    cond->bt.trace->inst->match_goal->id->preferences_from_goal,
-                                    cond->bt.trace, all_of_goal_next,
-                                    all_of_goal_prev);
+                                    lPref->inst->preferences_generated,
+                                    lPref, inst_next, inst_prev);
+                                if ((!lPref->inst->preferences_generated)
+                                    && (!lPref->inst->in_ms))
+                                {
+                                    next_iter = inst_list.insert(next_iter,
+                                        lPref->inst);
+                                }
+                                lPref = lNextPref;
                             }
-
-                            /* --- remove it from the list of bt.trace's from that instantiation --- */
-                            remove_from_dll(
-                                cond->bt.trace->inst->preferences_generated,
-                                cond->bt.trace, inst_next, inst_prev);
-                            if ((!cond->bt.trace->inst->preferences_generated)
-                                    && (!cond->bt.trace->inst->in_ms))
-                            {
-                                next_iter = inst_list.insert(next_iter,
-                                                             cond->bt.trace->inst);
-                            }
-
                             cond_stack.push_back(cond);
                         } // if
                     } // if

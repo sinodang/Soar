@@ -12,7 +12,7 @@
 
 /* ---------------------------------------------------------------------*/
 
-#define DEBUG_OUTPUT_ON
+//#define DEBUG_OUTPUT_ON
 
 /* These are just for experimental purposes.  Should not be commented out */
 #define EBC_MERGE_CONDITIONS
