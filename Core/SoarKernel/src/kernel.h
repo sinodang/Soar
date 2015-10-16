@@ -49,7 +49,7 @@ extern void print(agent* thisAgent, const char* format, ...);
      * o-supported element and lead to the elaboration of the GDS */
     //#define DEBUG_GDS_HIGH
 
-    #define MEMORY_POOL_STATS   /* -- Collects memory pool stats for stats command -- */
+//    #define MEMORY_POOL_STATS   /* -- Collects memory pool stats for stats command -- */
     #define MEM_POOLS_ENABLED 1
     #ifdef MEM_POOLS_ENABLED
         #define USE_MEM_POOL_ALLOCATORS 1
