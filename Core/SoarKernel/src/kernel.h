@@ -12,7 +12,7 @@
 typedef struct agent_struct agent;
 extern void print(agent* thisAgent, const char* format, ...);
 
-#define SOAR_RELEASE_VERSION
+//#define SOAR_RELEASE_VERSION
 //#define CHUNKING_WITH_CONFIDENCE
 
 #ifndef SOAR_RELEASE_VERSION

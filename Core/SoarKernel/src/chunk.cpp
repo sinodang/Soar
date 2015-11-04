@@ -1115,7 +1115,9 @@ void chunk_instantiation(agent* thisAgent, instantiation* inst, instantiation** 
     variablize = thisAgent->variablizationManager->learning_is_on_for_instantiation() && reliable;
 
 #ifdef CHUNKING_WITH_CONFIDENCE
-    /* Now that backtracing is done, we know whether we're confident enough */
+    /* Now that backtracing is done, we know whether we're confident enough.
+     * MToDo | If this operator wasn't selected using numeric preferences, we
+     *         should handle like a normal chunk. */
     if (variablize)
     {
         if (thisAgent->chunk_prob < thisAgent->sysparams[CHUNK_CONFIDENCE] / 100.0)
