@@ -185,11 +185,14 @@ void Output_Manager::fill_mode_info()
     mode_info[DT_EPMEM_CMD].prefix =                    strdup("EpMemCmd| ");
     mode_info[DT_PARSER].prefix =                       strdup("Parser  | ");
     mode_info[DT_GDS].prefix =                          strdup("GDS     | ");
-    mode_info[DT_EBC_RL].prefix =                       strdup("EBC-RL  | ");
     mode_info[DT_WME_CHANGES].prefix =                  strdup("WMEChngs| ");
     mode_info[DT_LINKS].prefix =                        strdup("Links   | ");
     mode_info[DT_UNKNOWN_LEVEL].prefix =                strdup("No Level| ");
 
+    mode_info[DT_EBC_RL].prefix =                       strdup("EBC-RL  | ");
+    mode_info[DT_EBC_RL_INTERVALS].prefix =             strdup("RL Intvl| ");
+    mode_info[DT_EBC_RL_SUPERIOR].prefix =              strdup("RL Super|");
+    mode_info[DT_EBC_RL_UPDATE].prefix =                strdup("RL Updte| ");
 
     mode_info[DT_MILESTONES].prefix =                   strdup("Milestne| ");
     mode_info[DT_PRINT_INSTANTIATIONS].prefix =         strdup("PrntInst| ");
@@ -233,11 +236,15 @@ void Output_Manager::fill_mode_info()
     mode_info[DT_CLI_LIBRARIES].enabled =               TRACE_Init_DT_CLI_LIBRARIES;
     mode_info[DT_PARSER].enabled =                      TRACE_Init_DT_PARSER;
     mode_info[DT_GDS].enabled =                         TRACE_Init_DT_GDS;
-    mode_info[DT_EBC_RL].enabled =                      TRACE_Init_DT_EBC_RL;
     mode_info[DT_EPMEM_CMD].enabled =                   TRACE_Init_DT_EPMEM_CMD;
     mode_info[DT_WME_CHANGES].enabled =                 TRACE_Init_DT_WME_CHANGES;
     mode_info[DT_LINKS].enabled =                       TRACE_Init_DT_LINKS;
     mode_info[DT_UNKNOWN_LEVEL].enabled =               TRACE_Init_DT_UNKNOWN_LEVEL;
+
+    mode_info[DT_EBC_RL].enabled =                      TRACE_Init_DT_EBC_RL;
+    mode_info[DT_EBC_RL_INTERVALS].enabled =            TRACE_Init_DT_EBC_RL_INTERVALS;
+    mode_info[DT_EBC_RL_SUPERIOR].enabled =             TRACE_Init_DT_EBC_RL_SUPERIOR;
+    mode_info[DT_EBC_RL_UPDATE].enabled =               TRACE_Init_DT_EBC_RL_UPDATE;
 
     mode_info[DT_PRINT_INSTANTIATIONS].enabled =        TRACE_Init_DT_PRINT_INSTANTIATIONS;
     mode_info[DT_MILESTONES].enabled =                  TRACE_Init_DT_MILESTONES;

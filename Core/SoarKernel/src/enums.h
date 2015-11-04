@@ -64,6 +64,9 @@ enum TraceMode
     DT_EBC_CLEANUP,
     DT_UNKNOWN_LEVEL,
     DT_EBC_RL,
+    DT_EBC_RL_INTERVALS,
+    DT_EBC_RL_SUPERIOR,
+    DT_EBC_RL_UPDATE,
     num_trace_modes
 };
 

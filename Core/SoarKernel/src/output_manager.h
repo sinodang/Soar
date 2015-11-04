@@ -44,7 +44,7 @@ typedef struct identity_struct identity_info;
     #define OM_Default_print_identity false;
 #else
     #define OM_Default_print_actual true;
-    #define OM_Default_print_identity true;
+    #define OM_Default_print_identity false;
 #endif
 
 typedef struct trace_mode_info_struct

@@ -12,7 +12,7 @@
 
 /* ---------------------------------------------------------------------*/
 
-//#define DEBUG_OUTPUT_ON
+#define DEBUG_OUTPUT_ON
 
 /* These are just for experimental purposes.  Should not be commented out */
 #define EBC_MERGE_CONDITIONS
@@ -61,10 +61,14 @@
 #define TRACE_Init_DT_EPMEM_CMD                   false
 #define TRACE_Init_DT_PARSER                      false
 #define TRACE_Init_DT_GDS                         false
-#define TRACE_Init_DT_EBC_RL                      true
 #define TRACE_Init_DT_WME_CHANGES                 false
 #define TRACE_Init_DT_LINKS                       false
 #define TRACE_Init_DT_UNKNOWN_LEVEL               false
+//--
+#define TRACE_Init_DT_EBC_RL                      true
+#define TRACE_Init_DT_EBC_RL_INTERVALS            true
+#define TRACE_Init_DT_EBC_RL_SUPERIOR             true
+#define TRACE_Init_DT_EBC_RL_UPDATE               false
 //--
 #define TRACE_Init_DT_MILESTONES                  false
 #define TRACE_Init_DT_PRINT_INSTANTIATIONS        false
@@ -127,10 +131,14 @@
 #define TRACE_Init_DT_EPMEM_CMD                   false
 #define TRACE_Init_DT_PARSER                      false
 #define TRACE_Init_DT_GDS                         false
-#define TRACE_Init_DT_EBC_RL                      false
 #define TRACE_Init_DT_WME_CHANGES                 false
 #define TRACE_Init_DT_LINKS                       false
 #define TRACE_Init_DT_UNKNOWN_LEVEL               false
+//--
+#define TRACE_Init_DT_EBC_RL                      false
+#define TRACE_Init_DT_EBC_RL_INTERVALS            false
+#define TRACE_Init_DT_EBC_RL_SUPERIOR             false
+#define TRACE_Init_DT_EBC_RL_UPDATE               false
 //--
 #define TRACE_Init_DT_MILESTONES                  false
 #define TRACE_Init_DT_PRINT_INSTANTIATIONS        false
