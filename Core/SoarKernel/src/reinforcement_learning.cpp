@@ -1126,7 +1126,7 @@ void rl_perform_update(agent* thisAgent, preference *selected, preference *candi
                 double sum_old_efr = 0.0;
                 if (!data->prev_op_rl_rules->empty())
                 {
-                    double trace_increment = (1.0 / static_cast<double>(data->prev_op_rl_rules->size()));
+//                     double trace_increment = (1.0 / static_cast<double>(data->prev_op_rl_rules->size()));
                     rl_rule_list::iterator p;
                     
                     for (p = data->prev_op_rl_rules->begin(); p != data->prev_op_rl_rules->end(); p++)

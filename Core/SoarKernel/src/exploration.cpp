@@ -589,10 +589,7 @@ preference* exploration_choose_according_to_policy(agent* thisAgent, slot* s, pr
     
     // get preference values for each candidate
     // see soar_ecPrintPreferences
-    for (preference* cand = candidates; cand; cand = cand->next_candidate)
-    {
-        exploration_compute_value_of_candidate(thisAgent, cand, s);
-    }
+    exploration_compute_value_of_candidates(thisAgent, candidates, s); ///< bazald
     
     preference * top_candidate = candidates; ///< bazald
     double top_value = candidates->numeric_value;
