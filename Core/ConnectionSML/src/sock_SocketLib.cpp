@@ -1,4 +1,4 @@
-#include <portability.h>
+#include "portability.h"
 
 /////////////////////////////////////////////////////////////////
 // SocketLib class
@@ -22,10 +22,10 @@ using namespace sock ;
 
 SocketLib::SocketLib()
 {
-	InitializeOperatingSystemSocketLibrary() ;
+    InitializeOperatingSystemSocketLibrary() ;
 }
 
 SocketLib::~SocketLib()
 {
-	TerminateOperatingSystemSocketLibrary() ;
+    TerminateOperatingSystemSocketLibrary() ;
 }

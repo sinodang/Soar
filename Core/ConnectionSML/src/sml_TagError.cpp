@@ -1,4 +1,4 @@
-#include <portability.h>
+#include "portability.h"
 
 /////////////////////////////////////////////////////////////////
 // TagError class
@@ -17,7 +17,7 @@ using namespace sml ;
 
 TagError::TagError(void)
 {
-	SetTagNameFast(sml_Names::kTagError) ;
+    SetTagNameFast(sml_Names::kTagError) ;
 }
 
 TagError::~TagError(void)

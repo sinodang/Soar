@@ -1,4 +1,4 @@
-#include <portability.h>
+#include "portability.h"
 
 /////////////////////////////////////////////////////////////////
 // TagName class
@@ -17,5 +17,5 @@ using namespace sml ;
 
 TagName::TagName()
 {
-	this->SetTagNameFast(sml_Names::kTagName) ;
+    this->SetTagNameFast(sml_Names::kTagName) ;
 }

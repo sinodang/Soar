@@ -6,7 +6,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-#include <portability.h>
+#include "portability.h"
 
 #include "sml_Utils.h"
 #include "cli_CommandLineInterface.h"
@@ -22,7 +22,8 @@
 using namespace cli;
 using namespace sml;
 
-bool CommandLineInterface::DoInternalSymbols() {
+bool CommandLineInterface::DoInternalSymbols()
+{
     print_internal_symbols(m_pAgentSML->GetSoarAgent());
     return true;
 }

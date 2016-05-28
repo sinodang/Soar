@@ -1,4 +1,4 @@
-#include <portability.h>
+#include "portability.h"
 
 /////////////////////////////////////////////////////////////////
 // TagResult class
@@ -17,7 +17,7 @@ using namespace sml ;
 
 TagResult::TagResult(void)
 {
-	SetTagNameFast(sml_Names::kTagResult) ;
+    SetTagNameFast(sml_Names::kTagResult) ;
 }
 
 TagResult::~TagResult(void)

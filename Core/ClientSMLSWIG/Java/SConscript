@@ -5,8 +5,8 @@
 import os
 import sys
 import itertools
+import subprocess
 import SCons.Script
-from subprocess import check_output
 
 # adapted from http://www.scons.org/wiki/JavaNativeInterface
 def ConfigureJNI(env):
@@ -14,7 +14,7 @@ def ConfigureJNI(env):
 	if not base:
 		if sys.platform == 'darwin':
 			# Apple's OS X has its own special java base directory
-			base = check_output(('/usr/libexec/java_home')).split('\n')[0]
+			base = '/System/Library/Frameworks/JavaVM.framework'
 
 		else:
 			# Search for the java compiler
@@ -26,17 +26,26 @@ def ConfigureJNI(env):
 			# /usr/jdkX.X/bin/javac, java's home directory is /usr/jdkX.X
 			base = os.path.split(jcdir)[0]
 
-	headers = [os.path.join(base, 'include')]
-	libs = [os.path.join(base, 'lib')]
-	if sys.platform == 'win32':
-		headers.append(os.path.join(base, 'include', 'win32'))
-	elif sys.platform == 'darwin':
-		headers.append(os.path.join(base, 'include', 'darwin'))
-	elif sys.platform.startswith('linux'):
-		headers.append(os.path.join(base, 'include', 'linux'))
+	if sys.platform == 'darwin':
+		if os.path.exists(os.path.join(base, 'Headers')):
+			# JDK 6
+			headers = [os.path.join(base, 'Headers')]
+			libs = [os.path.join(base, 'Libraries')]
+		else:
+			# JDK 7+
+			headers = [os.path.join(base, 'include')]
+			headers.append(os.path.join(base, 'include/darwin'))
+			libs = [os.path.join(base, 'lib')]
 	else:
-		return None
-	
+		headers = [os.path.join(base, 'include')]
+		libs = [os.path.join(base, 'lib')]
+		if sys.platform == 'win32':
+			headers.append(os.path.join(base, 'include', 'win32'))
+		elif sys.platform.startswith('linux'):
+			headers.append(os.path.join(base, 'include', 'linux'))
+		else:
+			return None
+
 	return (headers, libs)
 
 def get_headers(d):
@@ -51,7 +60,7 @@ if config == None:
 	print "the Java include, bin, and lib directories."
 	Return()
 
-clone = env.Clone()	
+clone = env.Clone()
 clone.Append(
 	CPPPATH = config[0],
 	LIBPATH = config[1],
@@ -80,7 +89,7 @@ fake_java_target = '#fake_java_target'
 # adapted from http://scons.org/wiki/DynamicSourceGenerator
 def late_java_builder(target, source, env):
 	if not os.path.isdir(srcdir.abspath):
-		print 'source directory does not exist'
+		print('source directory does not exist',srcdir.abspath)
 		sys.exit(1)
 	
 	clone.Java(classdir, srcdir)

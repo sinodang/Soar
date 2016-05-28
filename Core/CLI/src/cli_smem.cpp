@@ -7,7 +7,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-#include <portability.h>
+#include "portability.h"
 
 #include "cli_CommandLineInterface.h"
 
@@ -19,727 +19,447 @@
 #include "semantic_memory.h"
 #include "agent.h"
 #include "misc.h"
-#include "utilities.h"
 
 using namespace cli;
 using namespace sml;
 
-bool CommandLineInterface::DoSMem( const char pOp, const std::string* pAttr, const std::string* pVal )
+bool CommandLineInterface::DoSMem(const char pOp, const std::string* pAttr, const std::string* pVal)
 {
-    agent* agnt = m_pAgentSML->GetSoarAgent();
-    if ( !pOp )
+    agent* thisAgent = m_pAgentSML->GetSoarAgent();
+    std::ostringstream tempString;
+    
+    if (!pOp)
     {
-        std::string temp;
-        char *temp2;
-
-        temp = "SMem learning: ";
-        temp2 = agnt->smem_params->learning->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << "\n" << temp << "\n\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, "" );
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, "" );
-        }
-
-        temp = "Storage";
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-        temp = "-------";
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-        temp = "database: ";
-        temp2 = agnt->smem_params->database->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-        temp = "path: ";
-        temp2 = agnt->smem_params->path->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, "" );
-        }
-
-        temp = "lazy-commit: ";
-        temp2 = agnt->smem_params->lazy_commit->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, "" );
-        }
-
-		//
-
-		temp = "Activation";
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-        temp = "----------";
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-		temp = "activation-mode: ";
-        temp2 = agnt->smem_params->activation_mode->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-		temp = "activate-on-query: ";
-        temp2 = agnt->smem_params->activate_on_query->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-		temp = "base-decay: ";
-        temp2 = agnt->smem_params->base_decay->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-		temp = "base-update-policy: ";
-        temp2 = agnt->smem_params->base_update->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-		temp = "base-incremental-threshes: ";
-        temp2 = agnt->smem_params->base_incremental_threshes->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-		temp = "thresh: ";
-        temp2 = agnt->smem_params->thresh->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );			
-        }
-
-		if ( m_RawOutput )
-            m_Result << "\n";
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, "" );
-        }
-
-		//
-
-        temp = "Performance";
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-        temp = "-----------";
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-        temp = "page-size: ";
-        temp2 = agnt->smem_params->page_size->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );			
-        }
-		
-		temp = "cache-size: ";
-        temp2 = agnt->smem_params->cache_size->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );			
-        }
-
-        temp = "optimization: ";
-        temp2 = agnt->smem_params->opt->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );			
-        }
-
-        temp = "timers: ";
-        temp2 = agnt->smem_params->timers->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, "" );
-        }
-
-		//
-
-        temp = "Experimental";
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-        temp = "------------";
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-        temp = "merge: ";
-        temp2 = agnt->smem_params->merge->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-		temp = "mirroring: ";
-        temp2 = agnt->smem_params->mirroring->get_string();
-        temp += temp2;
-        delete temp2;
-        if ( m_RawOutput )
-        {
-            m_Result << temp << "\n";
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, temp.c_str() );
-        }
-
-		//
-
-        if ( m_RawOutput )
-            m_Result << "\n";
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, "" );
-        }
-
-		//
-
+        // Print SMem Settings
+        PrintCLIMessage_Header("Semantic Memory Settings", 40);
+        PrintCLIMessage_Item("learning:", thisAgent->smem_params->learning, 40);
+        PrintCLIMessage_Section("Storage", 40);
+        PrintCLIMessage_Item("database:", thisAgent->smem_params->database, 40);
+        PrintCLIMessage_Item("append:", thisAgent->smem_params->append_db, 40);
+        PrintCLIMessage_Item("path:", thisAgent->smem_params->path, 40);
+        PrintCLIMessage_Item("lazy-commit:", thisAgent->smem_params->lazy_commit, 40);
+        PrintCLIMessage_Section("Activation", 40);
+        PrintCLIMessage_Item("activation-mode:", thisAgent->smem_params->activation_mode, 40);
+        PrintCLIMessage_Item("activate-on-query:", thisAgent->smem_params->activate_on_query, 40);
+        PrintCLIMessage_Item("base-decay:", thisAgent->smem_params->base_decay, 40);
+        PrintCLIMessage_Item("base-update-policy:", thisAgent->smem_params->base_update, 40);
+        PrintCLIMessage_Item("base-incremental-threshes:", thisAgent->smem_params->base_incremental_threshes, 40);
+        PrintCLIMessage_Item("thresh:", thisAgent->smem_params->thresh, 40);
+        PrintCLIMessage_Section("Performance", 40);
+        PrintCLIMessage_Item("page-size:", thisAgent->smem_params->page_size, 40);
+        PrintCLIMessage_Item("cache-size:", thisAgent->smem_params->cache_size, 40);
+        PrintCLIMessage_Item("optimization:", thisAgent->smem_params->opt, 40);
+        PrintCLIMessage_Item("timers:", thisAgent->smem_params->timers, 40);
+        PrintCLIMessage_Section("Experimental", 40);
+        PrintCLIMessage_Item("merge:", thisAgent->smem_params->merge, 40);
+        PrintCLIMessage_Item("mirroring:", thisAgent->smem_params->mirroring, 40);
+        PrintCLIMessage("");
+        
         return true;
     }
-    else if ( pOp == 'a' )
+    else if (pOp == 'a')
     {
-        std::string *err = NULL;
-        bool result = smem_parse_chunks( agnt, pAttr->c_str(), &( err ) );
-
-        if ( !result )
+        std::string* err = new std::string("");
+        bool result = smem_parse_chunks(thisAgent, pAttr->c_str(), &(err));
+        
+        if (!result)
         {
-            SetError( *err );
-            delete err;
+            SetError(*err);
         }
-
+        else
+        {
+            PrintCLIMessage("Knowledge added to semantic memory.");
+        }
+        delete err;
         return result;
     }
-	else if ( pOp == 'b' )
+    else if (pOp == 'b')
     {
         std::string err;
-		bool result = smem_backup_db( agnt, pAttr->c_str(), &( err ) );
-
-        if ( !result )
+        bool result = smem_backup_db(thisAgent, pAttr->c_str(), &(err));
+        
+        if (!result)
         {
-            SetError( err );
-        }
-
-        return result;
-    }
-    else if ( pOp == 'g' )
-    {
-        soar_module::param *my_param = agnt->smem_params->get( pAttr->c_str() );
-        if ( !my_param )
-            return SetError( "Invalid attribute." );
-
-        char *temp2 = my_param->get_string();
-        std::string output( temp2 );
-        delete temp2;
-
-        if ( m_RawOutput )
-        {
-            m_Result << output;
+            SetError("Error while backing up database: " + err);
         }
         else
         {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
+            tempString << "Semantic memory database backed up to " << pAttr->c_str();
+            PrintCLIMessage(&tempString);
         }
-
-        return true;
+        
+        return result;
     }
-    else if ( pOp == 'i' )
+    else if (pOp == 'e')
     {
-        // Because of LTIs, re-initializing requires all other memories to be reinitialized.		
-
-        // epmem - close before working/production memories to get re-init benefits
-        DoEpMem( 'c' );
-
-        // smem - close before working/production memories to prevent id counter mess-ups
-        smem_close( agnt );
-
-        // production memory (automatic init-soar clears working memory as a result)		
-        ExciseBitset options(0);
-		options.set( EXCISE_ALL, true );
-        DoExcise( options, 0 );
-
+        bool result = thisAgent->smem_params->learning->set_string("on");
+        
+        if (!result)
+        {
+            SetError("This parameter is protected while the semantic memory database is open.");
+        }
+        else
+        {
+            PrintCLIMessage("Semantic memory enabled.");
+        }
+        
+        return result;
+    }
+    else if (pOp == 'd')
+    {
+        bool result = thisAgent->smem_params->learning->set_string("off");
+        
+        if (!result)
+        {
+            SetError("This parameter is protected while the semantic memory database is open.");
+        }
+        else
+        {
+            PrintCLIMessage("Semantic memory disabled.");
+        }
+        
+        return result;
+    }
+    else if (pOp == 'g')
+    {
+        soar_module::param* my_param = thisAgent->smem_params->get(pAttr->c_str());
+        if (!my_param)
+        {
+            return SetError("Invalid semantic memory parameter.  Use 'help smem' to see list of valid settings.");
+        }
+        
+        PrintCLIMessage_Item("", my_param, 0);
         return true;
     }
-	else if ( pOp == 'p' )
+    else if (pOp == 'h')
+    {
+        smem_lti_id lti_id = NIL;
+        uint64_t depth = 1;
+        bool history = true;
+        smem_attach(thisAgent);
+        
+        if (thisAgent->smem_db->get_status() != soar_module::connected)
+        {
+            return SetError("Semantic memory database not connected.");
+        }
+        
+        if (pAttr)
+        {
+            get_lexeme_from_string(thisAgent, pAttr->c_str());
+            if (thisAgent->lexeme.type == IDENTIFIER_LEXEME)
+            {
+                lti_id = smem_lti_get_id(thisAgent, thisAgent->lexeme.id_letter, thisAgent->lexeme.id_number);
+            }
+            if (lti_id == NIL)
+            {
+                return SetError("LTI not found");
+            }
+        }
+        
+        std::string viz;
+        
+        smem_print_lti(thisAgent, lti_id, depth, &(viz), history);
+        
+        if (viz.empty())
+        {
+            return SetError("Could not find information on LTI.");
+        }
+        
+        PrintCLIMessage_Header("Semantic Memory", 40);
+        PrintCLIMessage(&viz);
+        return true;
+    }
+    else if (pOp == 'i')
+    {
+        // Because of LTIs, re-initializing requires all other memories to be reinitialized.
+        // epmem - close before working/production memories to get re-init benefits
+        // smem - close before working/production memories to prevent id counter mess-ups
+        // production memory (automatic init-soar clears working memory as a result)
+        
+        epmem_reinit_cmd(thisAgent);
+        smem_reinit_cmd(thisAgent);
+        
+        ExciseBitset options(0);
+        options.set(EXCISE_ALL, true);
+        DoExcise(options, 0);
+        
+        PrintCLIMessage("Semantic memory system re-initialized.");
+        return true;
+    }
+    else if (pOp == 'p')
     {
         smem_lti_id lti_id = NIL;
         unsigned int depth = 1;
-
-		if ( pAttr )
-		{
-			get_lexeme_from_string( agnt, pAttr->c_str() );
-			if ( agnt->lexeme.type == IDENTIFIER_LEXEME )
-			{
-				if ( agnt->smem_db->get_status() == soar_module::connected )
-				{
-					lti_id = smem_lti_get_id( agnt, agnt->lexeme.id_letter, agnt->lexeme.id_number );
-
-					if ( ( lti_id != NIL ) && pVal )
-					{
-						from_c_string( depth, pVal->c_str() );
-					}
-				}
-			}
-
-			if ( lti_id == NIL )
-				return SetError( "Invalid attribute." );
-		}
-
-        std::string viz;
-
-        if ( lti_id == NIL )
+        
+        smem_attach(thisAgent);
+        if (thisAgent->smem_db->get_status() != soar_module::connected)
         {
-            smem_print_store( agnt, &( viz ) );
+            return SetError("Semantic memory database not connected.");
         }
-        else
+        
+        if (pAttr)
         {
-            smem_print_lti( agnt, lti_id, depth, &( viz ) );
-        }
-
-        if ( m_RawOutput )
-        {
-            m_Result << viz;
-        }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, viz.c_str() );
-        }
-
-        return true;
-    }
-    else if ( pOp == 's' )
-    {
-        soar_module::param *my_param = agnt->smem_params->get( pAttr->c_str() );
-        if ( !my_param )
-            return SetError( "Invalid attribute." );
-
-        if ( !my_param->validate_string( pVal->c_str() ) )
-            return SetError( "Invalid value." );
-
-        bool result = my_param->set_string( pVal->c_str() );
-
-        // since parameter name and value have been validated,
-        // this can only mean the parameter is protected
-        if ( !result )
-            SetError( "ERROR: this parameter is protected while the SMem database is open." );
-
-        return result;
-    }
-    else if ( pOp == 'S' )
-    {
-        if ( !pAttr )
-        {
-            std::string output;
-            char *temp2;
-
-			output = "SQLite Version: ";
-            temp2 = agnt->smem_stats->db_lib_version->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
+            get_lexeme_from_string(thisAgent, pAttr->c_str());
+            if (thisAgent->lexeme.type == IDENTIFIER_LEXEME)
             {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-            output = "Memory Usage: ";
-            temp2 = agnt->smem_stats->mem_usage->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-            output = "Memory Highwater: ";
-            temp2 = agnt->smem_stats->mem_high->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-            output = "Retrieves: ";
-            temp2 = agnt->smem_stats->expansions->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-            output = "Queries: ";
-            temp2 = agnt->smem_stats->cbr->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-            output = "Stores: ";
-            temp2 = agnt->smem_stats->stores->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-			output = "Activation Updates: ";
-            temp2 = agnt->smem_stats->act_updates->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-			output = "Mirrors: ";
-            temp2 = agnt->smem_stats->mirrors->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-            output = "Nodes: ";
-            temp2 = agnt->smem_stats->chunks->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-
-            output = "Edges: ";
-            temp2 = agnt->smem_stats->slots->get_string();
-            output += temp2;
-            delete temp2;
-            if ( m_RawOutput )
-            {
-                m_Result << output << "\n";
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-        }
-        else
-        {
-            soar_module::stat *my_stat = agnt->smem_stats->get( pAttr->c_str() );
-            if ( !my_stat )
-                return SetError( "Invalid statistic." );
-
-            char *temp2 = my_stat->get_string();
-            std::string output( temp2 );
-            delete temp2;
-
-            if ( m_RawOutput )
-            {
-                m_Result << output;
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
-        }
-
-        return true;
-    }
-    else if ( pOp == 't' )
-    {
-        if ( !pAttr )
-        {
-            struct foo: public soar_module::accumulator< soar_module::timer * >
-            {
-            private:
-                bool raw;
-                cli::CommandLineInterface *this_cli;
-                std::ostringstream& m_Result;
-
-                foo& operator=(const foo&) { return *this; }
-
-            public:
-                foo( bool m_RawOutput, cli::CommandLineInterface *new_cli, std::ostringstream& m_Result ): raw( m_RawOutput ), this_cli( new_cli ), m_Result( m_Result ) {};
-
-                void operator() ( soar_module::timer *t )
+                if (thisAgent->smem_db->get_status() == soar_module::connected)
                 {
-                    std::string output( t->get_name() );
-                    output += ": ";
-
-                    char *temp = t->get_string();
-                    output += temp;
-                    delete temp;
-
-                    if ( raw )
+                    lti_id = smem_lti_get_id(thisAgent, thisAgent->lexeme.id_letter, thisAgent->lexeme.id_number);
+                    
+                    if ((lti_id != NIL) && pVal)
                     {
-                        m_Result << output << "\n";
-                    }
-                    else
-                    {
-                        this_cli->AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
+                        from_c_string(depth, pVal->c_str());
                     }
                 }
-            } bar( m_RawOutput, this, m_Result );
-
-            agnt->smem_timers->for_each( bar );
+            }
+            
+            if (lti_id == NIL)
+            {
+                return SetError("LTI not found.");
+            }
+        }
+        
+        std::string viz;
+        
+        if (lti_id == NIL)
+        {
+            smem_print_store(thisAgent, &(viz));
+            if (!viz.empty())
+            {
+                PrintCLIMessage_Header("Semantic Memory", 40);
+            }
         }
         else
         {
-            soar_module::timer *my_timer = agnt->smem_timers->get( pAttr->c_str() );
-            if ( !my_timer )
-                return SetError( "Invalid timer." );
-
-            char *temp2 = my_timer->get_string();
-            std::string output( temp2 );
-            delete temp2;
-
-            if ( m_RawOutput )
-            {
-                m_Result << output;
-            }
-            else
-            {
-                AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, output.c_str() );
-            }
+            smem_print_lti(thisAgent, lti_id, depth, &(viz));
         }
-
+        if (viz.empty())
+        {
+            return SetError("Semantic memory is empty.");
+        }
+        
+        PrintCLIMessage(&viz);
         return true;
     }
-    else if ( pOp == 'v' )
+    else if (pOp == 'q')
+    {
+        std::string* err = new std::string;
+        std::string* retrieved = new std::string;
+        uint64_t number_to_retrieve = 1;
+        
+        if (pVal)
+        {
+            from_c_string(number_to_retrieve, pVal->c_str());
+        }
+        
+        bool result = smem_parse_cues(thisAgent, pAttr->c_str(), &(err), &(retrieved), number_to_retrieve);
+        
+        if (!result)
+        {
+            SetError("Error while parsing query\n" + *err);
+        }
+        else
+        {
+            PrintCLIMessage(retrieved);
+            PrintCLIMessage("SMem| Query complete.");
+        }
+        delete err;
+        delete retrieved;
+        return result;
+    }
+    else if (pOp == 'r')
+    {
+        std::string* err = new std::string;
+        std::string* retrieved = new std::string;
+        bool force = false;
+        if (pVal)
+        {
+            force = (!strcmp(pVal->c_str(), "f") || (!strcmp(pVal->c_str(), "force")));
+        }
+        
+        bool result = smem_parse_remove(thisAgent, pAttr->c_str(), &(err), &(retrieved), force);
+        
+        if (!result)
+        {
+            SetError("Error while attempting removal.\n" + *err);
+        }
+        else
+        {
+            PrintCLIMessage(retrieved);
+            PrintCLIMessage(err);
+            PrintCLIMessage("SMem| Removal complete.");
+        }
+        delete err;
+        delete retrieved;
+        return result;
+    }
+    else if (pOp == 's')
+    {
+        soar_module::param* my_param = thisAgent->smem_params->get(pAttr->c_str());
+        if (!my_param)
+        {
+            return SetError("Invalid SMem parameter.");
+        }
+        
+        if (!my_param->validate_string(pVal->c_str()))
+        {
+            return SetError("Invalid setting for SMem parameter.");
+        }
+        
+        smem_param_container::db_choices last_db_mode = thisAgent->smem_params->database->get_value();
+        bool result = my_param->set_string(pVal->c_str());
+        
+        if (!result)
+        {
+            SetError("This parameter is protected while the semantic memory database is open.");
+        }
+        else
+        {
+            tempString << pAttr->c_str() << " = " << pVal->c_str();
+            PrintCLIMessage(&tempString);
+            if (thisAgent->smem_db->get_status() == soar_module::connected)
+            {
+                if (((!strcmp(pAttr->c_str(), "database")) && (thisAgent->smem_params->database->get_value() != last_db_mode)) ||
+                        (!strcmp(pAttr->c_str(), "path")))
+                {
+                    PrintCLIMessage("To finalize database switch, issue an smem --init command.\n");
+                }
+            }
+            if (!strcmp(pAttr->c_str(), "append"))
+            {
+                if (thisAgent->smem_params->append_db->get_value() == off)
+                {
+                    PrintCLIMessage("Warning: Since append mode is off, starting/reinitializing,\n"
+                                    "         Soar will erase the semantic memory database.\n");
+                }
+                
+            }
+        }
+        return result;
+    }
+    else if (pOp == 'S')
+    {
+        smem_attach(thisAgent);
+        if (!pAttr)
+        {
+            // Print SMem Settings
+            PrintCLIMessage_Header("Semantic Memory Statistics", 40);
+            PrintCLIMessage_Item("SQLite Version:", thisAgent->smem_stats->db_lib_version, 40);
+            PrintCLIMessage_Item("Memory Usage:", thisAgent->smem_stats->mem_usage, 40);
+            PrintCLIMessage_Item("Memory Highwater:", thisAgent->smem_stats->mem_high, 40);
+            PrintCLIMessage_Item("Retrieves:", thisAgent->smem_stats->expansions, 40);
+            PrintCLIMessage_Item("Queries:", thisAgent->smem_stats->cbr, 40);
+            PrintCLIMessage_Item("Stores:", thisAgent->smem_stats->stores, 40);
+            PrintCLIMessage_Item("Activation Updates:", thisAgent->smem_stats->act_updates, 40);
+            PrintCLIMessage_Item("Mirrors:", thisAgent->smem_stats->mirrors, 40);
+            PrintCLIMessage_Item("Nodes:", thisAgent->smem_stats->chunks, 40);
+            PrintCLIMessage_Item("Edges:", thisAgent->smem_stats->slots, 40);
+        }
+        else
+        {
+            soar_module::statistic* my_stat = thisAgent->smem_stats->get(pAttr->c_str());
+            if (!my_stat)
+            {
+                return SetError("Invalid statistic.");
+            }
+            
+            PrintCLIMessage_Item("", my_stat, 0);
+        }
+        
+        return true;
+    }
+    else if (pOp == 't')
+    {
+        if (!pAttr)
+        {
+            struct foo: public soar_module::accumulator< soar_module::timer* >
+            {
+                private:
+                    bool raw;
+                    cli::CommandLineInterface* this_cli;
+                    std::ostringstream& m_Result;
+                    
+                    foo& operator=(const foo&)
+                    {
+                        return *this;
+                    }
+                    
+                public:
+                    foo(bool m_RawOutput, cli::CommandLineInterface* new_cli, std::ostringstream& m_Result): raw(m_RawOutput), this_cli(new_cli), m_Result(m_Result) {};
+                    
+                    void operator()(soar_module::timer* t)
+                    {
+                        std::string output(t->get_name());
+                        output += ":";
+                        this_cli->PrintCLIMessage_Item(output.c_str(), t, 40);
+                    }
+            } bar(m_RawOutput, this, m_Result);
+            
+            PrintCLIMessage_Header("Semantic Memory Timers", 40);
+            thisAgent->smem_timers->for_each(bar);
+        }
+        else
+        {
+            soar_module::timer* my_timer = thisAgent->smem_timers->get(pAttr->c_str());
+            if (!my_timer)
+            {
+                return SetError("Invalid timer.");
+            }
+            
+            PrintCLIMessage_Item("", my_timer, 0);
+        }
+        
+        return true;
+    }
+    else if (pOp == 'v')
     {
         smem_lti_id lti_id = NIL;
         unsigned int depth = 1;
-
-		if ( pAttr )
-		{
-			get_lexeme_from_string( agnt, pAttr->c_str() );
-			if ( agnt->lexeme.type == IDENTIFIER_LEXEME )
-			{
-				if ( agnt->smem_db->get_status() == soar_module::connected )
-				{
-					lti_id = smem_lti_get_id( agnt, agnt->lexeme.id_letter, agnt->lexeme.id_number );
-
-					if ( ( lti_id != NIL ) && pVal )
-					{
-						from_c_string( depth, pVal->c_str() );
-					}
-				}
-			}
-
-			if ( lti_id == NIL )
-				return SetError( "Invalid attribute." );
-		}
-
+        
+        // vizualizing the store requires an open semantic database
+        smem_attach(thisAgent);
+        
+        if (pAttr)
+        {
+            get_lexeme_from_string(thisAgent, pAttr->c_str());
+            if (thisAgent->lexeme.type == IDENTIFIER_LEXEME)
+            {
+                if (thisAgent->smem_db->get_status() == soar_module::connected)
+                {
+                    lti_id = smem_lti_get_id(thisAgent, thisAgent->lexeme.id_letter, thisAgent->lexeme.id_number);
+                    
+                    if ((lti_id != NIL) && pVal)
+                    {
+                        from_c_string(depth, pVal->c_str());
+                    }
+                }
+            }
+            
+            if (lti_id == NIL)
+            {
+                return SetError("Invalid long-term identifier.");
+            }
+        }
+        
         std::string viz;
-
-        if ( lti_id == NIL )
+        
+        if (lti_id == NIL)
         {
-            smem_visualize_store( agnt, &( viz ) );
+            smem_visualize_store(thisAgent, &(viz));
         }
         else
         {
-            smem_visualize_lti( agnt, lti_id, depth, &( viz ) );
+            smem_visualize_lti(thisAgent, lti_id, depth, &(viz));
         }
-
-        if ( m_RawOutput )
+        
+        if (viz.empty())
         {
-            m_Result << viz;
+            return SetError("Nothing to visualize.");
         }
-        else
-        {
-            AppendArgTagFast( sml_Names::kParamValue, sml_Names::kTypeString, viz.c_str() );
-        }
-
+        PrintCLIMessage(&viz);
+        
         return true;
     }
-
-    return SetError( "Option not implemented." );
+    
+    return SetError("Unknown option.");
 }

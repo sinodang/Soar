@@ -11,9 +11,9 @@
 /////////////////////////////////////////////////////////////////
 
 // NOTE: Requires that portability.h be loaded first
-#include <portability.h>
+#include "portability.h"
 
-#include "kernel.h" 
+#include "kernel.h"
 #include "init_soar.h"
 #include "mem.h"
 #include "lexer.h"
@@ -21,7 +21,8 @@
 #include "callback.h"
 #include "agent.h"
 #include "init_soar.h"
-#include "rhsfun.h"
+#include "rhs.h"
+#include "rhs_functions.h"
 #include "production.h" // for struct multi_attributes
 #include "print.h"      // for symboltostring
 #include "decide.h"
@@ -29,3 +30,4 @@
 #include "symtab.h"
 #include "io_soar.h"
 #include "wmem.h"
+#include "svs_interface.h"

@@ -6,7 +6,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-#include <portability.h>
+#include "portability.h"
 
 #include "sml_Utils.h"
 #include "cli_CommandLineInterface.h"
@@ -19,15 +19,17 @@
 using namespace cli;
 using namespace sml;
 
-bool CommandLineInterface::DoLoadLibrary(const std::string& libraryCommand) {
+bool CommandLineInterface::DoLoadLibrary(const std::string& libraryCommand)
+{
 
     std::string result = this->m_pKernelSML->FireLoadLibraryEvent(libraryCommand.c_str());
-
+    
     // zero length is success
-    if (result.size() == 0) {
+    if (result.size() == 0)
+    {
         return true;
     }
-
+    
     return SetError("load library failed: " + result);
 }
 

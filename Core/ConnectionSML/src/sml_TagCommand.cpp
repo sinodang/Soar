@@ -1,4 +1,4 @@
-#include <portability.h>
+#include "portability.h"
 
 /////////////////////////////////////////////////////////////////
 // TagCommand class
@@ -17,5 +17,5 @@ using namespace sml ;
 
 TagCommand::TagCommand()
 {
-	SetTagNameFast(sml_Names::kTagCommand) ;
+    SetTagNameFast(sml_Names::kTagCommand) ;
 }

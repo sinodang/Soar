@@ -6,7 +6,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-#include <portability.h>
+#include "portability.h"
 
 #include "sml_Utils.h"
 #include "cli_CommandLineInterface.h"
@@ -17,7 +17,8 @@
 
 using namespace cli;
 
-bool CommandLineInterface::DoEditProduction(std::string production) {
+bool CommandLineInterface::DoEditProduction(std::string production)
+{
     m_pKernelSML->FireEditProductionEvent(production.c_str()) ;
     return true;
 }

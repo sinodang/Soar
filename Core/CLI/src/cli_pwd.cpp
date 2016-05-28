@@ -6,7 +6,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-#include <portability.h>
+#include "portability.h"
 
 #include "sml_Utils.h"
 #include "cli_CommandLineInterface.h"
@@ -17,19 +17,24 @@
 using namespace cli;
 using namespace sml;
 
-bool CommandLineInterface::DoPWD() {
+bool CommandLineInterface::DoPWD()
+{
 
     std::string directory;
     bool ret = GetCurrentWorkingDirectory(directory);
-
-    if (directory.size()) {
-        if (m_RawOutput) {
+    
+    if (directory.size())
+    {
+        if (m_RawOutput)
+        {
             m_Result << directory;
-        } else {
+        }
+        else
+        {
             AppendArgTagFast(sml_Names::kParamDirectory, sml_Names::kTypeString, directory);
         }
     }
-
+    
     return ret;
 }
 

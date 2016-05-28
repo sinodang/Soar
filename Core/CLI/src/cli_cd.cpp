@@ -6,7 +6,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-#include <portability.h>
+#include "portability.h"
 
 #include "sml_Utils.h"
 #include "cli_CommandLineInterface.h"
@@ -16,9 +16,12 @@
 
 using namespace cli;
 
-bool CommandLineInterface::DoCD(const std::string *pDirectory) {
-    if (chdir(pDirectory->c_str())) 
+bool CommandLineInterface::DoCD(const std::string* pDirectory)
+{
+    if (chdir(pDirectory->c_str()))
+    {
         return SetError("Error changing to " + *pDirectory);
+    }
     return true;
 }
 

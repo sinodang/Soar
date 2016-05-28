@@ -6,7 +6,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-#include <portability.h>
+#include "portability.h"
 
 #include "sml_Utils.h"
 #include "cli_CommandLineInterface.h"
@@ -15,14 +15,21 @@
 
 using namespace cli;
 
-bool CommandLineInterface::DoPopD() {
+bool CommandLineInterface::DoPopD()
+{
 
     // There must be a directory on the stack to pop
-    if (m_DirectoryStack.empty()) return SetError("Directory stack is empty.");
-
+    if (m_DirectoryStack.empty())
+    {
+        return SetError("Directory stack is empty.");
+    }
+    
     // Change to the directory
-    if (!DoCD(&(m_DirectoryStack.top()))) return false;    // error handled in DoCD
-
+    if (!DoCD(&(m_DirectoryStack.top())))
+    {
+        return false;    // error handled in DoCD
+    }
+    
     // Pop the directory stack
     m_DirectoryStack.pop();
     return true;

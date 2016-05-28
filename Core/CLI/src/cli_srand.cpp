@@ -6,7 +6,7 @@
 //
 /////////////////////////////////////////////////////////////////
 
-#include <portability.h>
+#include "portability.h"
 
 #include "sml_Utils.h"
 #include "cli_CommandLineInterface.h"
@@ -19,16 +19,17 @@
 using namespace cli;
 using namespace sml;
 
-bool CommandLineInterface::DoSRand(uint32_t* pSeed) {
-    if (pSeed) 
+bool CommandLineInterface::DoSRand(uint32_t* pSeed)
+{
+    if (pSeed)
     {
-        SoarSeedRNG( *pSeed );
+        SoarSeedRNG(*pSeed);
     }
     else
     {
         SoarSeedRNG();
     }
-
+    
     return true;
 }
 
