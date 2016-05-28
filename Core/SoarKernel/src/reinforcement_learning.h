@@ -177,7 +177,7 @@ class rl_apoptosis_predicate: public soar_module::agent_predicate<T>
 class rl_credit_assignment_param: public soar_module::constant_param< rl_param_container::credit_assignment_choices > ///< bazald
 {
     protected:
-        agent* my_agent;
+        agent* thisAgent;
 
     public:
         rl_credit_assignment_param( const char *new_name, rl_param_container::credit_assignment_choices new_value, soar_module::predicate<rl_param_container::credit_assignment_choices> *new_prot_pred, agent *new_agent );
@@ -187,7 +187,7 @@ class rl_credit_assignment_param: public soar_module::constant_param< rl_param_c
 class rl_credit_modification_param: public soar_module::constant_param< rl_param_container::credit_modification_choices > ///< bazald
 {
     protected:
-        agent* my_agent;
+        agent* thisAgent;
 
     public:
         rl_credit_modification_param( const char *new_name, rl_param_container::credit_modification_choices new_value, soar_module::predicate<rl_param_container::credit_modification_choices> *new_prot_pred, agent *new_agent );
@@ -330,7 +330,7 @@ extern void rl_tabulate_reward_values(agent* thisAgent);
 extern void rl_store_data(agent* thisAgent, Symbol* goal, preference* cand);
 
 // update the value of Soar-RL rules
-extern void rl_perform_update( agent *my_agent, preference *selected, preference *candidates, bool op_rl, Symbol *goal, bool update_efr = true ); ///< bazald
+extern void rl_perform_update( agent *thisAgent, preference *selected, preference *candidates, bool op_rl, Symbol *goal, bool update_efr = true ); ///< bazald
 
 // clears eligibility traces in accordance with watkins
 extern void rl_watkins_clear(agent* thisAgent, Symbol* goal);
@@ -368,7 +368,7 @@ public:
 
     virtual ~TSDT();
 
-    void update(agent * const &my_agent);
+    void update(agent * const &thisAgent);
 
 protected:
     static double sum_Production_List(const Production_List &production_list);
@@ -376,7 +376,7 @@ protected:
 private:
     void update_credit();
 
-    virtual void update_efr(agent * const &my_agent);
+    virtual void update_efr(agent * const &thisAgent);
 
     virtual double calculate_efr() const = 0;
 
@@ -392,7 +392,7 @@ public:
                     const double &reward_);
 
 private:
-    void update_efr(agent * const &my_agent);
+    void update_efr(agent * const &thisAgent);
 
     double calculate_efr() const;
 };
@@ -444,13 +444,13 @@ public:
 
     void clear();
 
-    void insert(agent * const &my_agent,
+    void insert(agent * const &thisAgent,
                 TSDT * given_TSDT);
 
-    void update(agent * const &my_agent);
+    void update(agent * const &thisAgent);
 
 private:
-    void trim(agent * const &my_agent);
+    void trim(agent * const &thisAgent);
 
     Trace trace;
 

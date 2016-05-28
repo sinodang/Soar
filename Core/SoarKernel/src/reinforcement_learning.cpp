@@ -271,7 +271,7 @@ bool rl_apoptosis_predicate<T>::operator()(T /*val*/)
 }
 
 /// bazald
-rl_credit_assignment_param::rl_credit_assignment_param( const char *new_name, rl_param_container::credit_assignment_choices new_value, soar_module::predicate<rl_param_container::credit_assignment_choices> *new_prot_pred, agent *new_agent ): soar_module::constant_param<rl_param_container::credit_assignment_choices>( new_name, new_value, new_prot_pred ), my_agent( new_agent ) {}
+rl_credit_assignment_param::rl_credit_assignment_param( const char *new_name, rl_param_container::credit_assignment_choices new_value, soar_module::predicate<rl_param_container::credit_assignment_choices> *new_prot_pred, agent *new_agent ): soar_module::constant_param<rl_param_container::credit_assignment_choices>( new_name, new_value, new_prot_pred ), thisAgent( new_agent ) {}
 
 /// bazald
 void rl_credit_assignment_param::set_value( rl_param_container::credit_assignment_choices new_value )
@@ -280,7 +280,7 @@ void rl_credit_assignment_param::set_value( rl_param_container::credit_assignmen
 }
 
 /// bazald
-rl_credit_modification_param::rl_credit_modification_param( const char *new_name, rl_param_container::credit_modification_choices new_value, soar_module::predicate<rl_param_container::credit_modification_choices> *new_prot_pred, agent *new_agent ): soar_module::constant_param<rl_param_container::credit_modification_choices>( new_name, new_value, new_prot_pred ), my_agent( new_agent ) {}
+rl_credit_modification_param::rl_credit_modification_param( const char *new_name, rl_param_container::credit_modification_choices new_value, soar_module::predicate<rl_param_container::credit_modification_choices> *new_prot_pred, agent *new_agent ): soar_module::constant_param<rl_param_container::credit_modification_choices>( new_name, new_value, new_prot_pred ), thisAgent( new_agent ) {}
 
 /// bazald
 void rl_credit_modification_param::set_value( rl_param_container::credit_modification_choices new_value )
@@ -1402,6 +1402,73 @@ void rl_perform_update(agent* thisAgent, preference *selected, preference *candi
                             }
                         }
                     }
+
+                    /// bazald
+                    if(rl_variance_updated) {
+                        const double delta = alpha * (rl_variance_total_total - thisAgent->variance);
+                        const double old = thisAgent->variance;
+                        thisAgent->variance += delta;
+
+                        if(++thisAgent->variance_update_count > 1) {
+                            thisAgent->variance_mark2 += (rl_variance_total_total - old) * (rl_variance_total_total - thisAgent->variance);
+
+                            thisAgent->variance_variance = thisAgent->variance_mark2 / (thisAgent->variance_update_count - 1);
+                        }
+                    }
+                    
+                    /// bazald
+                    bool kill = false;
+                    for(rl_rule_list::iterator prod = data->prev_op_rl_rules->begin(); prod != data->prev_op_rl_rules->end(); ++prod) {
+                        const double uperf_old = thisAgent->uperf;
+                        const double uaperf_old = thisAgent->uaperf;
+
+                        if((*prod)->agent_uperf_contrib == production::NOT_YET) {
+                            (*prod)->agent_uperf_contrib = production::YES;
+                            const double uperf_count_next = thisAgent->uperf_count + 1;
+                            thisAgent->uperf *= thisAgent->uperf_count / uperf_count_next;
+                            thisAgent->uaperf *= thisAgent->uperf_count / uperf_count_next;
+                            thisAgent->uperf_count = uperf_count_next;
+                        }
+
+                        if(!(*prod)->init_fired_count) { ///< HACK
+                            (*prod)->init_fired_count = 1;
+                            (*prod)->init_fired_last = thisAgent->init_count;
+                        }
+
+                        if((*prod)->agent_uperf_contrib != production::DISABLED) {
+                            const double local_uperf = double((*prod)->rl_update_count) / double((*prod)->init_fired_count + 1.0);
+                            const double local_uaperf = (*prod)->rl_update_amount;// / double((*prod)->init_fired_count + 1.0);
+                  //           std::cerr << (*prod)->name->sc.name << "->init_fired_count = " << (*prod)->init_fired_count << std::endl;
+                  //           if((*prod)->init_fired_count == 0)
+                  //             kill = true;
+                            thisAgent->uperf += (local_uperf - (*prod)->agent_uperf_contrib_prev) / thisAgent->uperf_count;
+                            thisAgent->uaperf += (local_uaperf - (*prod)->agent_uaperf_contrib_prev) / thisAgent->uperf_count;
+                            (*prod)->agent_uperf_contrib_prev = local_uperf;
+                            (*prod)->agent_uaperf_contrib_prev = local_uaperf;
+
+                            assert(!(thisAgent->uperf != thisAgent->uperf)); ///< check validity
+                            assert(!(thisAgent->uaperf != thisAgent->uaperf)); ///< check validity
+
+                            const double mark2_contrib = (local_uperf - uperf_old) * (local_uperf - thisAgent->uperf);
+                            const double mark2_contriba = (local_uaperf - uaperf_old) * (local_uaperf - thisAgent->uaperf);
+                            thisAgent->uperf_mark2 += mark2_contrib - (*prod)->agent_uperf_contrib_mark2_prev;
+                            thisAgent->uaperf_mark2 += mark2_contriba - (*prod)->agent_uaperf_contrib_mark2_prev;
+                            (*prod)->agent_uperf_contrib_mark2_prev = mark2_contrib;
+                            (*prod)->agent_uaperf_contrib_mark2_prev = mark2_contriba;
+
+                            assert(!(thisAgent->uperf_mark2 != thisAgent->uperf_mark2)); ///< check validity
+                            assert(!(thisAgent->uaperf_mark2 != thisAgent->uaperf_mark2)); ///< check validity
+
+                            if(thisAgent->uperf_count > 1) {
+                                thisAgent->uperf_variance = thisAgent->uperf_mark2 / (thisAgent->uperf_count - 1);
+                                thisAgent->uaperf_variance = thisAgent->uaperf_mark2 / (thisAgent->uperf_count - 1);
+                                thisAgent->uperf_stddev = sqrt(thisAgent->uperf_variance);
+                                thisAgent->uaperf_stddev = sqrt(thisAgent->uaperf_variance);
+                            }
+                        }
+                    }
+              //       if(kill)
+              //         abort();
                 }
             }
         }
