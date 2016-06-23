@@ -1,0 +1,32 @@
+Src
+    command_table           outputs the list of commends available for soar
+    command                 ?
+    filter_input            ?
+    filter_table            ?
+    filter_val              ?
+    filter                  ?
+    params                  a set of common/important/global constants kept
+    scene                   (scene class ?)
+    sgnode_algs             algorithms for manipulating scenge graph nodes
+    sgnode                  a class for scene graph nodes
+    soar_interface          ?
+    svs_interface           ?
+    svs                     ?
+
+====================== Stuff I shouldnt change ================================
+
+Libraries:
+    ccd     C       Collision detection library for convex shapes
+    Eigen   C++     Light-weight linear algebra library
+    glfw    C       OpenGL library (not sure about its use)
+    viewer  C       seems to be another OpenGL library that's used for rendering
+
+Src
+    change_tracking_list    a list that tracks changes to itself (efficiency)
+    mat                     matrix manipulation functions (and macros ?)
+    serializable            serialization stuff
+    serialize               serialization stuff
+    common                  a utility file with commonly used functions
+    drawer                  interfaces with renderer
+    cliproxy                interface with command line ?
+
