@@ -775,6 +775,117 @@ class rank_filter : public typed_filter<double>
         bool select_highest;
 };
 
+
+/*
+ * This filter is very similar to a map filter, the only difference
+ * being that every output must be selected, if for a given
+ * filter_params input the selected flag is set to false, then
+ * there will be no output for that input set
+ *
+ * This is useful when returning a subset of the input
+ * (return all nodes that satisfy some condition)
+*/
+template <class T>
+class set_computation_filter : public typed_filter<T>
+{
+    public:
+        set_computation_filter(Symbol* root, soar_interface* si, filter_input* input)
+            : typed_filter<T>(root, si, input), current_output(NULL)
+        {}
+        
+        virtual ~set_computation_filter() {}
+        
+        /*
+         * Computes a single output value given a set of inputs
+         */
+        virtual bool input_added(const filter_params* p) = 0;
+        virtual bool input_changed(const filter_params* p) = 0;
+        virtual bool input_removed(const filter_params* p) = 0;
+
+        virtual bool compute(const std::set<const filter_params*>& input_set, T& out, bool& show_out) = 0;
+        
+        bool update_outputs()
+        {
+            const filter_input* input = filter::get_input();
+            bool recompute = false;
+            
+            // Get all added params
+            for (size_t i = input->first_added(); i < input->num_current(); ++i)
+            {
+                const filter_params* params = input->get_current(i);
+                if (!input_added(params))
+                {
+                    return false;
+                }
+                recompute = true;
+                input_set.insert(params);
+            }
+
+            // Get all changed params
+            for (size_t i = 0; i < input->num_changed(); ++i)
+            {
+                const filter_params* params = input->get_changed(i);
+                if (!input_changed(params))
+                {
+                    return false;
+                }
+                recompute = true;
+            }
+
+            // Get all removed params
+            for (size_t i = 0; i < input->num_removed(); ++i)
+            {
+                const filter_params* params = input->get_removed(i);
+                if (!input_removed(params))
+                {
+                    return false;
+                }
+                input_set.erase(params);
+                recompute = true;
+            }
+
+            // Recompute the output
+            if (recompute)
+            {
+                T output;
+                bool show_output;
+                if (!compute(input_set, output, show_output))
+                {
+                    return false;
+                }
+                if (!show_output and current_output != NULL)
+                {
+                    // Remove the output
+                    filter::remove_output(current_output);
+                    current_output = NULL;
+                } 
+                else if (show_output and current_output == NULL)
+                {
+                    // Create new output
+                    current_output = new filter_val_c<T>(output);
+                    filter::add_output(current_output);
+                }
+                else if (show_output and current_output != NULL)
+                {
+                    // Update the existing output (if changed)
+                    T cur_output_val;
+                    if (get_filter_val(current_output, cur_output_val) && output != cur_output_val)
+                    {
+                        current_output->set_value(output);
+                        filter::change_output(current_output);
+                    }
+                }
+            }
+
+            return true;
+        }
+        
+    private:
+        std::set<const filter_params*> input_set;
+        filter_val_c<T>* current_output;
+};
+
+
 /*
  Filters that don't take any inputs and always outputs the same value
 */

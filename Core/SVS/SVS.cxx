@@ -18,6 +18,7 @@
 #include "src/filters/node.cpp"
 #include "src/filters/occlusion.cpp"
 #include "src/filters/overlap.cpp"
+#include "src/filters/set_filters.cpp"
 #include "src/filters/tag_select.cpp"
 #include "src/filters/volume.cpp"
 

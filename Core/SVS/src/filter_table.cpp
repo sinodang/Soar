@@ -52,6 +52,8 @@ filter_table_entry* calculate_placement_filter_entry();
 // filters/intersect.cpp
 filter_table_entry* intersect_filter_entry();
 filter_table_entry* intersect_select_filter_entry();
+filter_table_entry* intersect_any_filter_entry();
+filter_table_entry* intersect_all_filter_entry();
 
 // filters/contain.cpp
 filter_table_entry* contain_filter_entry();
@@ -107,6 +109,8 @@ filter_table::filter_table()
     
     add(intersect_filter_entry());
     add(intersect_select_filter_entry());
+    add(intersect_any_filter_entry());
+    add(intersect_all_filter_entry());
     
     add(contain_filter_entry());
     add(contain_select_filter_entry());

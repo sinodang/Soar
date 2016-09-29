@@ -25,6 +25,7 @@
  *********************************************************/
 #include "sgnode_algs.h"
 #include "filters/base_node_filters.h"
+#include "filters/set_filters.h"
 #include "scene.h"
 #include "filter_table.h"
 
@@ -83,6 +84,44 @@ filter_table_entry* intersect_select_filter_entry()
     e->parameters["b"] = "Sgnode b";
 		e->parameters["intersect_type"] = "Either bbox or hull";
     e->create = &make_intersect_select_filter;
+    return e;
+}
+
+/////// filter intersect_any //////
+filter* make_intersect_any_filter(Symbol* root, soar_interface* si, scene* scn, filter_input* input)
+{
+    return new node_set_test_any_filter(root, si, input, &intersect_test);
+}
+
+filter_table_entry* intersect_any_filter_entry()
+{
+    filter_table_entry* e = new filter_table_entry();
+    e->name = "intersect_any";
+    e->description = "returns a boolean, true if node a intersects any in the given set";
+    e->parameters["a"] = "A single sgnode to test against the given set";
+    e->parameters["set"] = "Set of sgnodes to test against";
+    e->parameters["intersect_type"] = "Either bbox or hull";
+    e->parameters["a_first"] = "If true computes test(a, b), if false computes test(b, a), for each node b in set";
+    e->create = &make_intersect_any_filter;
+    return e;
+}
+
+/////// filter intersect_all //////
+filter* make_intersect_all_filter(Symbol* root, soar_interface* si, scene* scn, filter_input* input)
+{
+    return new node_set_test_all_filter(root, si, input, &intersect_test);
+}
+
+filter_table_entry* intersect_all_filter_entry()
+{
+    filter_table_entry* e = new filter_table_entry();
+    e->name = "intersect_all";
+    e->description = "returns a boolean, true if node a intersects all nodes in the given set";
+    e->parameters["a"] = "A single sgnode to test against the given set";
+    e->parameters["set"] = "Set of sgnodes to test against";
+    e->parameters["intersect_type"] = "Either bbox or hull";
+    e->parameters["a_first"] = "If true computes test(a, b), if false computes test(b, a), for each node b in set";
+    e->create = &make_intersect_all_filter;
     return e;
 }
 
