@@ -124,5 +124,27 @@ class product_filter_input : public filter_input
         //void printVal2Params()
 };
 
+/*
+ Input class that takes the Cartesian product of all input lists, except an input set
+*/
+class set_product_filter_input : public filter_input
+{
+    public:
+        void combine(const input_table& inputs);
+        
+    private:
+        void gen_new_combinations(const input_table& inputs);
+        void erase_param_set(filter_params* s);
+        void reset_sub();
+        void clear_sub();
+        
+        typedef std::list<filter_params*> param_set_list;
+        
+        typedef std::map<filter_val*, param_set_list > val2param_map;
+        val2param_map val2params;
+        
+        //void printVal2Params()
+};
+
 
 #endif

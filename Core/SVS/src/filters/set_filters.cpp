@@ -25,26 +25,18 @@ bool node_set_test_any_filter::input_changed(const filter_params* p)
 
     if (a_first)
     {
-        node_cache[set_node] = test(a, set_node, p);
+        node_cache[p] = test(a, set_node, p);
     }
     else
     {
-        node_cache[set_node] = test(set_node, a, p);
+        node_cache[p] = test(set_node, a, p);
     }
 
     return true;
 }
 
 bool node_set_test_any_filter::input_removed(const filter_params* p){
-    sgnode* set_node = NULL;
-    
-    if (!get_filter_param(this, p, "set", set_node))
-    {
-        set_status("Need nodes a and set as input");
-        return false;
-    }
-
-    node_cache.erase(set_node);
+    node_cache.erase(p);
     return true;
 }
 
@@ -56,7 +48,7 @@ bool node_set_test_any_filter::compute(const std::set<const filter_params*>& inp
     show_out = true;
     out = false;
     // Check all cached values, if any is true then the output is true (OR operation)
-    for(std::map<const sgnode*, bool>::const_iterator i = node_cache.begin(); i != node_cache.end(); i++)
+    for(std::map<const filter_params*, bool>::const_iterator i = node_cache.begin(); i != node_cache.end(); i++)
     {
         if (i->second == true)
         {
@@ -92,26 +84,18 @@ bool node_set_test_all_filter::input_changed(const filter_params* p)
 
     if (a_first)
     {
-        node_cache[set_node] = test(a, set_node, p);
+        node_cache[p] = test(a, set_node, p);
     }
     else
     {
-        node_cache[set_node] = test(set_node, a, p);
+        node_cache[p] = test(set_node, a, p);
     }
 
     return true;
 }
 
 bool node_set_test_all_filter::input_removed(const filter_params* p){
-    sgnode* set_node = NULL;
-    
-    if (!get_filter_param(this, p, "set", set_node))
-    {
-        set_status("Need nodes a and set as input");
-        return false;
-    }
-
-    node_cache.erase(set_node);
+    node_cache.erase(p);
     return true;
 }
 
@@ -123,7 +107,7 @@ bool node_set_test_all_filter::compute(const std::set<const filter_params*>& inp
     show_out = true;
     out = true;
     // Check all cached values, if any is false then the output is false (AND operation)
-    for(std::map<const sgnode*, bool>::const_iterator i = node_cache.begin(); i != node_cache.end(); i++)
+    for(std::map<const filter_params*, bool>::const_iterator i = node_cache.begin(); i != node_cache.end(); i++)
     {
         if (i->second == false)
         {

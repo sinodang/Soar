@@ -790,10 +790,12 @@ class set_computation_filter : public typed_filter<T>
 {
     public:
         set_computation_filter(Symbol* root, soar_interface* si, filter_input* input)
-            : typed_filter<T>(root, si, input), current_output(NULL)
-        {}
+            : typed_filter<T>(root, si, input), current_output(NULL), show_input_set(false)
+        {
+            input_set_params.push_back(make_pair("inputs", &input_set_fv));
+        }
         
-        virtual ~set_computation_filter() {}
+        virtual ~set_computation_filter() { }
         
         /*
          * Computes a single output value given a set of inputs
@@ -803,11 +805,32 @@ class set_computation_filter : public typed_filter<T>
         virtual bool input_removed(const filter_params* p) = 0;
 
         virtual bool compute(const std::set<const filter_params*>& input_set, T& out, bool& show_out) = 0;
+
+        void get_output_params(filter_val* fv, const filter_params*& p)
+        {
+            if (show_input_set)
+            {
+                p = &input_set_params;
+            }
+            else 
+            {
+                p = NULL;
+            }
+        }
+        
         
         bool update_outputs()
         {
             const filter_input* input = filter::get_input();
             bool recompute = false;
+            bool input_set_changed = false;
+
+            if (input->num_current() > 0)
+            {
+                std::string flag;
+                get_filter_param(this, input->get_current(0), "show_input_set", flag);
+                show_input_set = (flag == "true");
+            }
             
             // Get all added params
             for (size_t i = input->first_added(); i < input->num_current(); ++i)
@@ -818,7 +841,10 @@ class set_computation_filter : public typed_filter<T>
                     return false;
                 }
                 recompute = true;
+
                 input_set.insert(params);
+                input_set_fv.insert(params);
+                input_set_changed = true;
             }
 
             // Get all changed params
@@ -840,8 +866,11 @@ class set_computation_filter : public typed_filter<T>
                 {
                     return false;
                 }
-                input_set.erase(params);
                 recompute = true;
+
+                input_set.erase(params);
+                input_set_fv.erase(params);
+                input_set_changed = true;
             }
 
             // Recompute the output
@@ -869,10 +898,20 @@ class set_computation_filter : public typed_filter<T>
                 {
                     // Update the existing output (if changed)
                     T cur_output_val;
-                    if (get_filter_val(current_output, cur_output_val) && output != cur_output_val)
+                    if (get_filter_val(current_output, cur_output_val))
                     {
-                        current_output->set_value(output);
-                        filter::change_output(current_output);
+                        if (output != cur_output_val && !(show_input_set && input_set_changed))
+                        {
+                            current_output->set_value(output);
+                            filter::change_output(current_output);
+                        } 
+                        // If we are showing the input_set, then we have to replace the output
+                        else if (show_input_set && input_set_changed)
+                        {
+                            filter::remove_output(current_output);
+                            current_output = new filter_val_c<T>(output);
+                            filter::add_output(current_output);
+                        }
                     }
                 }
             }
@@ -881,7 +920,11 @@ class set_computation_filter : public typed_filter<T>
         }
         
     private:
+        bool show_input_set;
         std::set<const filter_params*> input_set;
+        filter_params input_set_params;
+        filter_val_c<std::set<const filter_params*> > input_set_fv;
+
         filter_val_c<T>* current_output;
 };
 

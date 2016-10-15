@@ -125,6 +125,17 @@ class filter_val_c : public filter_val    // c for concrete
         bool dirty;
 };
 
+//template<>
+//void inline filter_val_c< std::set<const filter_params*> >::get_rep(std::map<std::string, std::string>& rep) const
+//{
+//    rep.clear();
+//    int n = 1;
+//    for (std::set<const filter_params*>::const_iterator i = v.begin(); i != v.end(); i++)
+//    {
+//        rep[tostring(n++)] = *i;
+//    }
+//}
+
 template<>
 void inline filter_val_c<vec3>::get_rep(std::map<std::string, std::string>& rep) const
 {
@@ -222,6 +233,112 @@ class filter_val_c<sgnode*> : public filter_val
         
     private:
         sgnode* v;
+        bool dirty;
+};
+
+////////////////////////////////////////
+// class filter_val_c<T>
+//   Template Specialization for filter_val_c<set<T>>
+/////////////////////////////////////////
+
+#include <iostream>
+
+template <class S>
+class filter_val_c<std::set<S> > : public filter_val    // c for concrete
+{
+    public:
+        filter_val_c() : v(), dirty(true){ }
+        filter_val_c(const std::set<S>& v) : v(v), dirty(true) {}
+        virtual ~filter_val_c() { }
+        
+        filter_val* clone() const
+        {
+            return new filter_val_c<std::set<S> >(v);
+        }
+        
+        filter_val& operator=(const filter_val& rhs)
+        {
+            const filter_val_c<std::set<S> >* c = dynamic_cast<const filter_val_c<std::set<S> >*>(&rhs);
+            assert(c);
+            if (v != c->v)
+            {
+                dirty = true;
+            }
+            v = c->v;
+            return *this;
+        }
+        
+        bool operator==(const filter_val& rhs) const
+        {
+            const filter_val_c<std::set<S> >* c = dynamic_cast<const filter_val_c<std::set<S> >*>(&rhs);
+            if (!c)
+            {
+                return false;
+            }
+            return v == c->v;
+        }
+        
+        std::set<S> get_value() const
+        {
+            return v;
+        }
+        
+        void set_value(const std::set<S>& n)
+        {
+            if (v != n)
+            {
+                dirty = true;
+            }
+            v = n;
+        }
+        
+        std::string toString() const
+        {
+            std::stringstream ss;
+            bool first = true;
+            for (typename std::set<S>::const_iterator i = v.begin(); i != v.end(); i++)
+            {
+                if(!first)
+                {
+                    ss << ", ";
+                    first = false;
+                }
+                ss << *i;
+            }
+            return ss.str();
+        }
+
+        void insert(const S& el) 
+        {
+            v.insert(el);
+            dirty = true;
+        }
+
+        void erase(const S& el)
+        {
+            v.erase(el);
+            dirty = true;
+        }
+        
+        bool is_dirty() const
+        {
+            return dirty;
+        }
+        
+        void reset_dirty()
+        {
+            dirty = false;
+        }
+
+        void get_rep(std::map<std::string, std::string>& rep) const
+        {
+            rep.clear();
+            rep["size"] = tostring(v.size());
+            std::cout << "filter_val_c<set>::get_rep() - size=" << v.size() << std::endl;
+        }
+        
+    private:
+        std::set<S> v;
         bool dirty;
 };
 

@@ -244,3 +244,150 @@ void product_filter_input::erase_param_set(filter_params* s)
         l.erase(find(l.begin(), l.end(), s));
     }
 }
+
+/*********************************************************
+ * class product_filter_input
+ ********************************************************/
+void set_product_filter_input::combine(const input_table& inputs)
+{
+    filter_output* set_input = NULL;
+    val2param_map::iterator k;
+    param_set_list::iterator l;
+    for (size_t i = 0, iend = inputs.size(); i < iend; ++i)
+    {
+        filter_output* o = inputs[i].in_fltr->get_output();
+        if(inputs[i].name == "set")
+        {
+            set_input = o;
+            continue;
+        }
+        
+        for (size_t j = 0, jend = o->num_removed(); j < jend; ++j)
+        {
+            filter_val* r = o->get_removed(j);
+            k = val2params.find(r);
+            
+            if (k == val2params.end() || val2params.empty())
+            {
+                continue;
+            }
+            //assert(k != val2params.end());
+            
+            param_set_list temp = k->second;
+            for (l = temp.begin(); l != temp.end(); ++l)
+            {
+                remove(*l);
+                erase_param_set(*l);
+            }
+            val2params.erase(k);
+        }
+    }
+    
+    for (size_t i = 0, iend = inputs.size(); i < iend; ++i)
+    {
+        filter_output* o = inputs[i].in_fltr->get_output();
+        for (size_t j = 0, jend = o->num_changed(); j < jend; ++j)
+        {
+            k = val2params.find(o->get_changed(j));
+            if (k == val2params.end() || val2params.empty())
+            {
+                continue;
+            }
+            
+            //assert(k != val2params.end());
+            for (l = k->second.begin(); l != k->second.end(); ++l)
+            {
+                change(*l);
+            }
+        }
+    }
+    gen_new_combinations(inputs);
+}
+
+void set_product_filter_input::reset_sub()
+{
+    val2params.clear();
+}
+
+void set_product_filter_input::clear_sub()
+{
+    val2params.clear();
+}
+
+/*
+ Generate all combinations of inputs that involve at least one new
+ input.  Do this by iterating over the input lists.  For the i^th
+ input list, take the cartesian product of the old inputs from lists
+ 0..(i-1), the new inputs of list i, and both old and new inputs from
+ lists (i+1)..n.  This will avoid generating duplicates.  I'm assuming
+ that new inputs are at the end of each list.
+*/
+void set_product_filter_input::gen_new_combinations(const input_table& inputs)
+{
+    for (size_t i = 0, iend = inputs.size(); i < iend; ++i)
+    {
+        vector<size_t> begin, end;
+        bool empty = false;
+        for (size_t j = 0, jend = inputs.size(); j < jend; ++j)
+        {
+            filter_output* o = inputs[j].in_fltr->get_output();
+            if (j < i)
+            {
+                begin.push_back(0);
+                end.push_back(o->first_added()); // same as end of old inputs
+            }
+            else if (j == i)
+            {
+                begin.push_back(o->first_added());
+                end.push_back(o->num_current());
+            }
+            else
+            {
+                begin.push_back(0);
+                end.push_back(o->num_current());
+            }
+            if (begin.back() == end.back())
+            {
+                empty = true;
+                break;
+            }
+        }
+        if (empty)
+        {
+            continue;
+        }
+        vector<size_t> curr = begin;
+        while (true)
+        {
+            filter_params* p = new filter_params();
+            p->reserve(inputs.size());
+            for (size_t j = 0, jend = inputs.size(); j < jend; ++j)
+            {
+                filter_val* v = inputs[j].in_fltr->get_output()->get_current(curr[j]);
+                p->push_back(make_pair(inputs[j].name, v));
+                val2params[v].push_back(p);
+            }
+            add(p);
+            
+            size_t j, jend;
+            for (j = 0, jend = curr.size(); j < jend && ++curr[j] == end[j]; ++j)
+            {
+                curr[j] = begin[j];
+            }
+            if (j == curr.size())
+            {
+                return;
+            }
+        }
+    }
+}
+
+void set_product_filter_input::erase_param_set(filter_params* s)
+{
+    filter_params::const_iterator i;
+    for (i = s->begin(); i != s->end(); ++i)
+    {
+        param_set_list& l = val2params[i->second];
+        l.erase(find(l.begin(), l.end(), s));
+    }
+}

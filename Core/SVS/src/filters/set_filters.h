@@ -56,7 +56,7 @@ class node_set_test_any_filter : public set_computation_filter<bool>
         bool a_first;
         node_test* test;
 
-        std::map<const sgnode*, bool> node_cache;
+        std::map<const filter_params*, bool> node_cache;
 };
 
 class node_set_test_all_filter : public set_computation_filter<bool>
@@ -81,7 +81,7 @@ class node_set_test_all_filter : public set_computation_filter<bool>
         bool a_first;
         node_test* test;
 
-        std::map<const sgnode*, bool> node_cache;
+        std::map<const filter_params*, bool> node_cache;
 };
 
 #endif

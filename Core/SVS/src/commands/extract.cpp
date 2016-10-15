@@ -166,6 +166,18 @@ class extract_command : public command, public filter_input::listener
             {
                 return si->make_wme(id, attr, single_val);
             }
+
+            std::set<const filter_params*> params;
+            if (get_filter_val(v, params))
+            {
+                for (std::set<const filter_params*>::const_iterator i = params.begin(); i != params.end(); i++)
+                {
+                    wme* param_wme = si->make_id_wme(id, "params");
+                    Symbol* param_id = si->get_wme_val(param_wme);
+                    update_param_struct(*i, param_id);
+                }
+                return NULL;
+            }
             
             map<string, string> rep;
             string def;
