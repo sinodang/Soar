@@ -111,24 +111,32 @@ void product_filter_input::combine(const input_table& inputs)
 {
     val2param_map::iterator k;
     param_set_list::iterator l;
+
+    // For each input filter
     for (size_t i = 0, iend = inputs.size(); i < iend; ++i)
     {
         filter_output* o = inputs[i].in_fltr->get_output();
-        
+
+        // For each filter_val removed from the filter's output
         for (size_t j = 0, jend = o->num_removed(); j < jend; ++j)
         {
             filter_val* r = o->get_removed(j);
+
+            // Find each filter_params containing the removed filter_val
+            // And delete it
             k = val2params.find(r);
             
+            //assert(k != val2params.end());
             if (k == val2params.end() || val2params.empty())
             {
                 continue;
             }
-            //assert(k != val2params.end());
             
             param_set_list temp = k->second;
+            // For each filter_params containing the filter_val being removed
             for (l = temp.begin(); l != temp.end(); ++l)
             {
+                // Remove it from the output and erase it from the val2params map
                 remove(*l);
                 erase_param_set(*l);
             }
@@ -136,9 +144,11 @@ void product_filter_input::combine(const input_table& inputs)
         }
     }
     
+    // For each input filter
     for (size_t i = 0, iend = inputs.size(); i < iend; ++i)
     {
         filter_output* o = inputs[i].in_fltr->get_output();
+        // For each filter_val in th einput that changed
         for (size_t j = 0, jend = o->num_changed(); j < jend; ++j)
         {
             k = val2params.find(o->get_changed(j));
@@ -148,6 +158,8 @@ void product_filter_input::combine(const input_table& inputs)
             }
             
             //assert(k != val2params.end());
+            // For each filter_params contianing the filter_Val
+            //   Mark it as changed in the output
             for (l = k->second.begin(); l != k->second.end(); ++l)
             {
                 change(*l);
@@ -238,8 +250,11 @@ void product_filter_input::gen_new_combinations(const input_table& inputs)
 void product_filter_input::erase_param_set(filter_params* s)
 {
     filter_params::const_iterator i;
+    // For each filter_val in the filter_params
     for (i = s->begin(); i != s->end(); ++i)
     {
+        // Find the param_set_list for that filter_val
+        //    and remove the reference to the filter_params being erased
         param_set_list& l = val2params[i->second];
         l.erase(find(l.begin(), l.end(), s));
     }
